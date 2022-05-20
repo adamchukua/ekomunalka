@@ -8,6 +8,7 @@
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable-xhdpi/ic_settings_black.xml" value="0.188" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable-xxhdpi/ic_settings_black.xml" value="0.188" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable/bg_gradient.xml" value="0.188" />
+        <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable/gradient_spinner.xml" value="0.188" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.188" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable/ic_launcher_background.xml" value="0.188" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.188" />
@@ -18,6 +19,7 @@
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable/splash_fg.xml" value="0.188" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/drawable/splash_gradient.xml" value="0.188" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/layout/activity_main.xml" value="0.268" />
+        <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/layout/activity_new_record.xml" value="0.2" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/layout/activity_splash.xml" value="0.1793478260869565" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/layout/fragment_dashboard.xml" value="0.1793478260869565" />
         <entry key="..\:/Projects/Java/Android/eKomunalka/app/src/main/res/layout/fragment_home.xml" value="0.2" />

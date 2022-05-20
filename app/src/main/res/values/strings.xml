@@ -3,6 +3,11 @@
     <string name="title_home">Головна</string>
     <string name="title_notifications">Нагадування</string>
     <string name="title_settings">Налаштування</string>
-    <string name="version">Version 0.2.0.0</string>
+    <string name="version">Version 0.3.1.0</string>
     <string name="about_title_settings">Про застосунок</string>
+    <string name="record_current">Поточні показання</string>
+    <string name="save">Зберегти</string>
+    <string name="choose_service">Оберіть тип послуги</string>
+    <string name="comment">Коментар</string>
+    <string name="paid">Сплачено</string>
 </resources>
