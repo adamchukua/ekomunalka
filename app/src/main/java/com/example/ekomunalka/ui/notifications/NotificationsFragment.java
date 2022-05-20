@@ -36,19 +36,13 @@ public class NotificationsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
-
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        //final TextView textView = binding.textNotifications;
-        //notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -57,7 +51,7 @@ public class NotificationsFragment extends Fragment {
             manager.createNotificationChannel(channel);
         }
 
-        notifyBtn = (Button) view.findViewById(R.id.button);
+        notifyBtn = view.findViewById(R.id.button);
         notifyBtn.setOnClickListener(view1 -> {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity(), "My Notification")
                     .setContentTitle("Тестове повідомлення")

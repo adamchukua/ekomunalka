@@ -14,9 +14,9 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="24dp"
         android:ems="10"
+        android:hint="@string/record_current"
         android:inputType="number"
         android:minHeight="48dp"
-        android:hint="@string/record_current"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chooseService" />
