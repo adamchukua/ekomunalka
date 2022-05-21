@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             Intent intent = new Intent(getActivity(), RecordActivity.class);
             intent.putExtra("id", id);
-            startActivity(intent);
+            activityLauncher.launch(intent);
         });
     }
 

@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class RecordActivity extends AppCompatActivity {
@@ -29,6 +30,22 @@ public class RecordActivity extends AppCompatActivity {
     Spinner chooseService;
     CheckBox isPaid;
     EditText commentText;
+    Spinner chooseMonth;
+
+    String[] months = {
+            "Січень",
+            "Лютий",
+            "Березень",
+            "Квітень",
+            "Травень",
+            "Червень",
+            "Липень",
+            "Серпень",
+            "Вересень",
+            "Жовтень",
+            "Листопад",
+            "Грудень"
+    };
 
     @SuppressLint("Range")
     @Override
@@ -73,23 +90,30 @@ public class RecordActivity extends AppCompatActivity {
         commentText.setText((String) data[4]);
         isPaid.setChecked(Integer.parseInt((String) data[3]) == 1);
 
+        chooseMonth = findViewById(R.id.chooseMonth);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        chooseMonth.setAdapter(adapter1);
+        chooseMonth.setSelection(Integer.parseInt(((String) data[0]).substring(0, ((String) data[0]).length() - 5)));
+
         saveData.setOnClickListener(v -> {
+            String date = Arrays.asList(months).indexOf(chooseMonth.getSelectedItem().toString()) + "." + ((String) data[0]).substring(((String) data[0]).length() - 4);
             String service = chooseService.getSelectedItem().toString();;
             int current = currentReadings.getText().toString().isEmpty() ? 0 : Integer.parseInt(currentReadings.getText().toString());
             int paid = isPaid.isChecked() ? 1 : 0;
             String comment = commentText.getText().toString();
 
             Object[] newEntries = {
+                    date,
                     service,
                     current,
                     paid,
                     comment
             };
 
-            if (!service.equals(data[1]) || current != Integer.parseInt(String.valueOf(data[2])) || paid != Integer.parseInt(String.valueOf(data[3])) || !comment.equals(data[4])) {
+            if (!date.equals(data[0]) || !service.equals(data[1]) || current != Integer.parseInt(String.valueOf(data[2])) || paid != Integer.parseInt(String.valueOf(data[3])) || !comment.equals(data[4])) {
                 UpdateData(newEntries, id);
             } else {
-                if (current != 0) {
+                if (current == 0) {
                     Toast.makeText(RecordActivity.this, "Ви маєте вписати дані щоб їх додати!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(RecordActivity.this, "Дані не змінено!", Toast.LENGTH_LONG).show();

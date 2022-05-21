@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class NewRecordActivity extends AppCompatActivity {
@@ -19,8 +20,24 @@ public class NewRecordActivity extends AppCompatActivity {
     Button addData;
     EditText currentReadings;
     Spinner chooseService;
+    Spinner chooseMonth;
     CheckBox isPaid;
     EditText commentText;
+
+    String[] months = {
+        "Січень",
+        "Лютий",
+        "Березень",
+        "Квітень",
+        "Травень",
+        "Червень",
+        "Липень",
+        "Серпень",
+        "Вересень",
+        "Жовтень",
+        "Листопад",
+        "Грудень"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +53,15 @@ public class NewRecordActivity extends AppCompatActivity {
         isPaid = findViewById(R.id.isPaid);
         addData = findViewById(R.id.saveData);
         commentText = findViewById(R.id.comment);
+        chooseMonth = findViewById(R.id.chooseMonth);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
+        chooseMonth.setAdapter(adapter1);
+        chooseMonth.setSelection(Calendar.getInstance().get(Calendar.MONTH));
 
         addData.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
 
-            String date = c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR);
+            String date = Arrays.asList(months).indexOf(chooseMonth.getSelectedItem().toString()) + "." + c.get(Calendar.YEAR);
             String service = chooseService.getSelectedItem().toString();;
             int current = currentReadings.getText().toString().isEmpty() ? 0 : Integer.parseInt(currentReadings.getText().toString());
             int paid = isPaid.isChecked() ? 1 : 0;

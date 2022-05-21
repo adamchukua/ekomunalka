@@ -55,10 +55,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean UpdateData(Object[] values, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL3, (String) values[0]);
-        contentValues.put(COL4, (int) values[1]);
-        contentValues.put(COL5, (int) values[2]);
-        contentValues.put(COL6, (String) values[3]);
+        contentValues.put(COL2, (String) values[0]);
+        contentValues.put(COL3, (String) values[1]);
+        contentValues.put(COL4, (int) values[2]);
+        contentValues.put(COL5, (int) values[3]);
+        contentValues.put(COL6, (String) values[4]);
 
         long result = db.update(TABLE_NAME, contentValues, "_id = ?", new String[]{String.valueOf(id)});
 
