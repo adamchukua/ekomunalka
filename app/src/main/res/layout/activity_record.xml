@@ -26,7 +26,7 @@
             app:layout_constraintTop_toBottomOf="@+id/chooseService" />
 
         <Button
-            android:id="@+id/addData"
+            android:id="@+id/saveData"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginStart="24dp"

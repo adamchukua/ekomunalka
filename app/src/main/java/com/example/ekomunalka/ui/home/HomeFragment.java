@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -27,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.ekomunalka.DatabaseHelper;
 import com.example.ekomunalka.NewRecordActivity;
 import com.example.ekomunalka.R;
+import com.example.ekomunalka.RecordActivity;
 import com.example.ekomunalka.databinding.FragmentHomeBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -40,6 +43,7 @@ public class HomeFragment extends Fragment {
     DatabaseHelper db;
     FloatingActionButton openNewRecordActivity;
     int resultOfAddingNewRecord;
+    SimpleCursorAdapter adapter;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -71,6 +75,12 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), NewRecordActivity.class);
             activityLauncher.launch(intent);
         });
+
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent intent = new Intent(getActivity(), RecordActivity.class);
+            intent.putExtra("id", id);
+            startActivity(intent);
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -83,7 +93,19 @@ public class HomeFragment extends Fragment {
     public void RefreshList() {
         ArrayList<String> arrayList = new ArrayList<>();
         Cursor data = db.getListContents();
-        if (data.getCount() != 0) {
+
+        adapter = new SimpleCursorAdapter(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                data,
+                new String[] { "DATE" },
+                new int[] { android.R.id.text1 },
+                0
+        );
+
+        listView.setAdapter(adapter);
+
+        /*if (data.getCount() != 0) {
             while (data.moveToNext()) {
                 arrayList.add(data.getString(2) +
                         " (" + data.getString(1) + ")" +
@@ -91,7 +113,7 @@ public class HomeFragment extends Fragment {
                 ListAdapter listAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, arrayList);
                 listView.setAdapter(listAdapter);
             }
-        }
+        }*/
     }
 
     @Override

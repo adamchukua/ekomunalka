@@ -4,15 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.example.ekomunalka.ui.home.HomeFragment;
 
 import java.util.Calendar;
 
@@ -28,7 +25,7 @@ public class NewRecordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_record);
+        setContentView(R.layout.activity_record);
 
         db = new DatabaseHelper(NewRecordActivity.this);
         currentReadings = findViewById(R.id.current);
@@ -37,7 +34,7 @@ public class NewRecordActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         chooseService.setAdapter(adapter);
         isPaid = findViewById(R.id.isPaid);
-        addData = findViewById(R.id.addData);
+        addData = findViewById(R.id.saveData);
         commentText = findViewById(R.id.comment);
 
         addData.setOnClickListener(v -> {
@@ -59,7 +56,6 @@ public class NewRecordActivity extends AppCompatActivity {
 
             if (date.length() != 0 && service.length() != 0) {
                 AddData(newEntries);
-                //editText.setText("");
             } else {
                 Toast.makeText(NewRecordActivity.this, "Ви маєте вписати дані щоб їх додати!", Toast.LENGTH_LONG).show();
             }

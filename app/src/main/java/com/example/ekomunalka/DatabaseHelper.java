@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "base.db";
+    public static final String DATABASE_NAME = "database.db";
     public static final String TABLE_NAME = "records";
-    public static final String COL1 = "ID";
+    public static final String COL1 = "_id";
     public static final String COL2 = "DATE";
     public static final String COL3 = "SERVICE";
     public static final String COL4 = "CURRENT";
@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
-                " (ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " DATE TEXT NOT NULL," +
                 " SERVICE TEXT NOT NULL," +
                 " CURRENT INTEGER NOT NULL," +
@@ -51,8 +51,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return result != -1;
     }
+
+    public boolean UpdateData(Object[] values, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL3, (String) values[0]);
+        contentValues.put(COL4, (int) values[1]);
+        contentValues.put(COL5, (int) values[2]);
+        contentValues.put(COL6, (String) values[3]);
+
+        long result = db.update(TABLE_NAME, contentValues, "_id = ?", new String[]{String.valueOf(id)});
+
+        return result != -1;
+    }
+
     public Cursor getListContents() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+    }
+
+    public Cursor getItem(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE _id = " + id, null);
     }
 }

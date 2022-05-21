@@ -10,10 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EKomunalka">
         <activity
-            android:name=".NewRecordActivity"
-            android:label="Додати новий запис"
+            android:name=".RecordActivity"
+            android:label="Запис"
             android:parentActivityName=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".NewRecordActivity"
+            android:exported="false"
+            android:label="Додати новий запис"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SplashActivity"
             android:exported="true"
