@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -22,6 +24,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -96,24 +99,31 @@ public class HomeFragment extends Fragment {
 
         adapter = new SimpleCursorAdapter(
                 getActivity(),
-                android.R.layout.simple_list_item_1,
+                R.layout.mylist,
                 data,
-                new String[] { "DATE" },
-                new int[] { android.R.id.text1 },
+                new String[] { "SERVICE", "DATE", "SERVICE" },
+                new int[] { R.id.title, R.id.subtitle, R.id.icon },
                 0
         );
 
-        listView.setAdapter(adapter);
+        adapter.setViewBinder((view, cursor, columnIndex) -> {
+            if(view.getId() == R.id.icon) {
+                if (cursor.getString(columnIndex).equals("Вода")) {
+                    ((ImageView)view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_water_svgrepo_com));
+                } else if (cursor.getString(columnIndex).equals("Газ")) {
+                    ((ImageView)view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_gas_svgrepo_com));
+                } else if (cursor.getString(columnIndex).equals("Електроенергія")) {
+                    ((ImageView)view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_electricity_svgrepo_com));
+                }
 
-        /*if (data.getCount() != 0) {
-            while (data.moveToNext()) {
-                arrayList.add(data.getString(2) +
-                        " (" + data.getString(1) + ")" +
-                        " - " + data.getString(3));
-                ListAdapter listAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, arrayList);
-                listView.setAdapter(listAdapter);
+
+                return true;
             }
-        }*/
+
+            return false;
+        });
+
+        listView.setAdapter(adapter);
     }
 
     @Override
