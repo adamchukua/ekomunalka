@@ -75,7 +75,7 @@ public class RecordActivity extends AppCompatActivity {
 
         saveData.setOnClickListener(v -> {
             String service = chooseService.getSelectedItem().toString();;
-            int current = Integer.parseInt(currentReadings.getText().toString());
+            int current = currentReadings.getText().toString().isEmpty() ? 0 : Integer.parseInt(currentReadings.getText().toString());
             int paid = isPaid.isChecked() ? 1 : 0;
             String comment = commentText.getText().toString();
 
@@ -86,10 +86,14 @@ public class RecordActivity extends AppCompatActivity {
                     comment
             };
 
-            if (service.length() != 0 && (!service.equals(data[1])) || current != Integer.parseInt(String.valueOf(data[2])) || paid != Integer.parseInt(String.valueOf(data[3])) || !comment.equals(data[4])) {
+            if (!service.equals(data[1]) || current != Integer.parseInt(String.valueOf(data[2])) || paid != Integer.parseInt(String.valueOf(data[3])) || !comment.equals(data[4])) {
                 UpdateData(newEntries, id);
             } else {
-                Toast.makeText(RecordActivity.this, "Дані не змінено!", Toast.LENGTH_LONG).show();
+                if (current != 0) {
+                    Toast.makeText(RecordActivity.this, "Ви маєте вписати дані щоб їх додати!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(RecordActivity.this, "Дані не змінено!", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

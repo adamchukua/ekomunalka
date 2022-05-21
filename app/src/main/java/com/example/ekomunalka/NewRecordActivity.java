@@ -42,7 +42,7 @@ public class NewRecordActivity extends AppCompatActivity {
 
             String date = c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR);
             String service = chooseService.getSelectedItem().toString();;
-            int current = Integer.parseInt(currentReadings.getText().toString());
+            int current = currentReadings.getText().toString().isEmpty() ? 0 : Integer.parseInt(currentReadings.getText().toString());
             int paid = isPaid.isChecked() ? 1 : 0;
             String comment = commentText.getText().toString();
 
@@ -54,7 +54,7 @@ public class NewRecordActivity extends AppCompatActivity {
                     comment
             };
 
-            if (date.length() != 0 && service.length() != 0) {
+            if (current != 0) {
                 AddData(newEntries);
             } else {
                 Toast.makeText(NewRecordActivity.this, "Ви маєте вписати дані щоб їх додати!", Toast.LENGTH_LONG).show();
