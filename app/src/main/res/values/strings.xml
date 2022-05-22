@@ -3,7 +3,7 @@
     <string name="title_home">Головна</string>
     <string name="title_notifications">Нагадування</string>
     <string name="title_settings">Налаштування</string>
-    <string name="version">Version 0.4.2.1</string>
+    <string name="version">Version 0.5.0.0</string>
     <string name="about_title_settings">Про застосунок</string>
     <string name="record_current">Поточні показання</string>
     <string name="save">Зберегти</string>
@@ -15,4 +15,7 @@
     <string name="electricity">Електроенергія</string>
     <string name="add_new_record_desc">Додати новий запис</string>
     <string name="add_new_notification_desc">Додати нове нагадування</string>
+    <string name="sum">Сума:</string>
+    <string name="name">Назва</string>
+    <string name="price">Ціна за одинию</string>
 </resources>

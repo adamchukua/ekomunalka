@@ -10,14 +10,21 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "e.db";
-    public static final String TABLE_NAME = "records";
-    public static final String ID = "_id";
-    public static final String DATE = "date";
-    public static final String SERVICE = "service";
-    public static final String CURRENT = "current";
-    public static final String PAID = "paid";
-    public static final String COMMENT = "comment";
+    public static final String DATABASE_NAME = "e1.db";
+
+    public static final String TABLE_RECORDS = "records";
+    public static final String RECORDS_ID = "_id";
+    public static final String RECORDS_DATE = "date";
+    public static final String RECORDS_SERVICE = "service";
+    public static final String RECORDS_CURRENT = "current";
+    public static final String RECORDS_PAID = "paid";
+    public static final String RECORDS_COMMENT = "comment";
+
+    public static final String TABLE_TARIFFS = "tariffs";
+    public static final String TARIFFS_ID = "_id";
+    public static final String TARIFFS_NAME = "name";
+    public static final String TARIFFS_PRICE = "price";
+    public static final String TARIFFS_COMMENT = "comment";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -25,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + TABLE_NAME +
+        String createRecordsTable = "CREATE TABLE " + TABLE_RECORDS +
                 " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " date TEXT NOT NULL," +
                 " service TEXT NOT NULL," +
@@ -33,52 +40,102 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " paid INTEGER NOT NULL," +
                 " comment TEXT," +
                 "UNIQUE(date, service))";
-        db.execSQL(createTable);
+
+        String createTariffsTable = "CREATE TABLE " + TABLE_TARIFFS +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " name TEXT NOT NULL," +
+                " price INT NOT NULL," +
+                " comment TEXT," +
+                "UNIQUE(name))";
+
+        db.execSQL(createRecordsTable);
+        db.execSQL(createTariffsTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TARIFFS);
         onCreate(db);
     }
 
-    public boolean addData(Map<String, String> values) {
+    public boolean addRecord(Map<String, String> values) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DATE, values.get("date"));
-        contentValues.put(SERVICE, values.get("service"));
-        contentValues.put(CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
-        contentValues.put(PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
-        contentValues.put(COMMENT, values.get("comment"));
+        contentValues.put(RECORDS_DATE, values.get("date"));
+        contentValues.put(RECORDS_SERVICE, values.get("service"));
+        contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
+        contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
+        contentValues.put(RECORDS_COMMENT, values.get("comment"));
 
-        long result = db.insertOrThrow(TABLE_NAME, null, contentValues);
+        long result = db.insertOrThrow(TABLE_RECORDS, null, contentValues);
 
         return result != -1;
     }
 
-    public boolean UpdateData(Map<String, String> values, int id) {
+    public boolean updateRecord(Map<String, String> values, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DATE, values.get("date"));
-        contentValues.put(SERVICE, values.get("service"));
-        contentValues.put(CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
-        contentValues.put(PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
-        contentValues.put(COMMENT, values.get("comment"));
+        contentValues.put(RECORDS_DATE, values.get("date"));
+        contentValues.put(RECORDS_SERVICE, values.get("service"));
+        contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
+        contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
+        contentValues.put(RECORDS_COMMENT, values.get("comment"));
 
-        long result = db.update(TABLE_NAME, contentValues, "_id = ?",
+        long result = db.update(TABLE_RECORDS, contentValues, "_id = ?",
                 new String[]{String.valueOf(id)});
 
         return result != -1;
     }
 
-    public Cursor getListContents() {
+    public Cursor getRecords() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS, null);
     }
 
-    public Cursor getItem(int id) {
+    public Cursor getRecord(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE _id = " + id,
+        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS + " WHERE _id = " + id,
                 null);
+    }
+
+    public int getRecordPrevious(String service, String date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor result = db.rawQuery("SELECT current FROM " + TABLE_RECORDS + " WHERE service = '" +
+                        service + "' AND date = '" + date + "'",
+                null);
+        result.moveToNext();
+
+        if (result.getString(0).isEmpty()) {
+            return 0;
+        }
+
+        return Integer.parseInt(result.getString(0));
+    }
+
+    public boolean addTariff(Map<String, String> values) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TARIFFS_NAME, values.get("name"));
+        contentValues.put(TARIFFS_PRICE, Integer.valueOf(Objects.requireNonNull(values.get("price"))));
+        contentValues.put(TARIFFS_COMMENT, values.get("comment"));
+
+        long result = db.insertOrThrow(TABLE_TARIFFS, null, contentValues);
+
+        return result != -1;
+    }
+
+    public Cursor getTariffs() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_TARIFFS, null);
+    }
+
+    public int getTariffPrice(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor result = db.rawQuery("SELECT price FROM " + TABLE_TARIFFS + " WHERE name = '" +
+                        name + "'",
+                null);
+        result.moveToNext();
+        return Integer.parseInt(result.getString(0));
     }
 }

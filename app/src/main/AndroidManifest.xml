@@ -10,10 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EKomunalka">
         <activity
-            android:name=".RecordActivity"
-            android:label="Запис"
-            android:parentActivityName=".MainActivity"
+            android:name=".TariffActivity"
             android:exported="false" />
+        <activity
+            android:name=".NewTariffActivity"
+            android:exported="false"
+            android:label="Додати новий тариф"
+            android:parentActivityName=".NewRecordActivity" />
+        <activity
+            android:name=".RecordActivity"
+            android:exported="false"
+            android:label="Запис"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".NewRecordActivity"
             android:exported="false"

@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,11 +26,15 @@ public class RecordActivity extends AppCompatActivity {
     Spinner chooseMonth;
     Spinner chooseService;
     EditText currentReadings;
+    Spinner chooseTariff;
     CheckBox isPaid;
     EditText commentText;
+    TextView sum;
     Button saveData;
+    String[] tariffs;
 
     Cursor receivedItem;
+    Cursor tariffs_db;
     int id;
 
     @SuppressLint("Range")
@@ -42,16 +48,21 @@ public class RecordActivity extends AppCompatActivity {
         mainActivity = new MainActivity();
         currentReadings = findViewById(R.id.current);
         chooseService = findViewById(R.id.chooseService);
-        String[] services = new String[] { "Вода", "Газ", "Електроенергія" };
-        ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, services);
+        ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mainActivity.services);
         chooseService.setAdapter(servicesAdapter);
         isPaid = findViewById(R.id.isPaid);
-        saveData = findViewById(R.id.saveData);
+        saveData = findViewById(R.id.saveRecord);
         commentText = findViewById(R.id.comment);
+        sum = findViewById(R.id.sum);
+        chooseTariff = findViewById(R.id.chooseTariff);
+        tariffs = getTariffs();
+        ArrayAdapter<String> tariffsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, tariffs);
+        chooseTariff.setAdapter(tariffsAdapter);
 
         Intent receivedIntent = getIntent();
         id = (int) receivedIntent.getLongExtra("id", -1);
-        receivedItem = db.getItem(id);
+        receivedItem = db.getRecord(id);
+        tariffs_db = db.getTariffs();
 
         Map<String, String> data = GetDataFromDB();
         int chosenServiceId = GetServiceId(Objects.requireNonNull(data.get("service")));
@@ -64,6 +75,7 @@ public class RecordActivity extends AppCompatActivity {
         currentReadings.setText(data.get("current"));
         isPaid.setChecked(Objects.equals(data.get("paid"), "1"));
         commentText.setText(data.get("comment"));
+        sum.setText("0 грн");
 
         saveData.setOnClickListener(v -> {
             String date = Arrays.asList(mainActivity.months)
@@ -88,7 +100,7 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     public void UpdateData(Map<String, String> newValues, int id) {
-        boolean insertData = db.UpdateData(newValues, id);
+        boolean insertData = db.updateRecord(newValues, id);
 
         if (insertData) {
             mainActivity.Toast(this, "Дані оновлено!", false);
@@ -132,16 +144,29 @@ public class RecordActivity extends AppCompatActivity {
 
         switch (service) {
             case "Вода":
-                id = 0;
-                break;
-            case "Газ":
                 id = 1;
                 break;
-            case "Електроенергія":
+            case "Газ":
                 id = 2;
+                break;
+            case "Електроенергія":
+                id = 3;
                 break;
         }
 
         return id;
+    }
+
+    public String[] getTariffs() {
+        ArrayList<String> listOfTariffs = new ArrayList<>();
+
+        listOfTariffs.add("Оберіть тариф:");
+
+        while (tariffs_db.moveToNext()) {
+            listOfTariffs.add(tariffs_db.getString(1));
+        }
+        listOfTariffs.add("Додати новий тариф");
+
+        return listOfTariffs.toArray(new String[0]);
     }
 }

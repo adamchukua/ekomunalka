@@ -1,5 +1,7 @@
 package com.example.ekomunalka;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -12,9 +14,12 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.ekomunalka.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     public String[] months = {
+            "Оберіть місяць:",
             "Січень",
             "Лютий",
             "Березень",
@@ -30,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public String[] services = new String[] {
+            "Оберіть сервіс:",
             "Вода",
             "Газ",
             "Електроенергія"
@@ -54,5 +60,4 @@ public class MainActivity extends AppCompatActivity {
     public void Toast(android.content.Context context, String text, boolean duration) {
         Toast.makeText(context, text, duration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
     }
-
 }

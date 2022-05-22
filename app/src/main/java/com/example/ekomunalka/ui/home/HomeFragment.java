@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void RefreshListOfRecords() {
-        Cursor data = db.getListContents();
+        Cursor data = db.getRecords();
 
         adapter = new SimpleCursorAdapter(
                 getActivity(),
