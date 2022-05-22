@@ -3,6 +3,7 @@ package com.example.ekomunalka;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
@@ -70,16 +72,25 @@ public class NewRecordActivity extends AppCompatActivity {
     }
 
     public void AddData(Map<String, String> newEntries) {
-        boolean insertData = db.addData(newEntries);
-
-        if (insertData) {
-            mainActivity.Toast(this, "Дані додані!", false);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("result", 1);
-            setResult(RESULT_OK, intent);
-            NewRecordActivity.super.onBackPressed();
-        } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+        try {
+            db.addData(newEntries);
         }
+        catch (SQLiteConstraintException e) {
+            mainActivity.Toast(this,
+                    "Сервіс \"" + newEntries.get("service") + "\" вже записаний в цьому місяці", true);
+
+            return;
+        }
+        catch (Exception e) {
+            mainActivity.Toast(this, "Щось пішло не так...", true);
+
+            return;
+        }
+
+        mainActivity.Toast(this, "Дані додані!", false);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("result", 1);
+        setResult(RESULT_OK, intent);
+        NewRecordActivity.super.onBackPressed();
     }
 }

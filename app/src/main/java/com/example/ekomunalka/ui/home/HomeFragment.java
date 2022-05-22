@@ -97,7 +97,7 @@ public class HomeFragment extends Fragment {
                 getActivity(),
                 R.layout.mylist,
                 data,
-                new String[] { "SERVICE", "DATE", "SERVICE" },
+                new String[] { "service", "date", "service" },
                 new int[] { R.id.title, R.id.subtitle, R.id.icon },
                 0
         );

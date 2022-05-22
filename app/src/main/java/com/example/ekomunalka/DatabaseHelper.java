@@ -10,14 +10,14 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "database.db";
+    public static final String DATABASE_NAME = "e.db";
     public static final String TABLE_NAME = "records";
     public static final String ID = "_id";
-    public static final String DATE = "DATE";
-    public static final String SERVICE = "SERVICE";
-    public static final String CURRENT = "CURRENT";
-    public static final String PAID = "PAID";
-    public static final String COMMENT = "COMMENT";
+    public static final String DATE = "date";
+    public static final String SERVICE = "service";
+    public static final String CURRENT = "current";
+    public static final String PAID = "paid";
+    public static final String COMMENT = "comment";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -27,11 +27,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME +
                 " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " DATE TEXT NOT NULL," +
-                " SERVICE TEXT NOT NULL," +
-                " CURRENT INTEGER NOT NULL," +
-                " PAID INTEGER NOT NULL," +
-                " COMMENT TEXT)";
+                " date TEXT NOT NULL," +
+                " service TEXT NOT NULL," +
+                " current INTEGER NOT NULL," +
+                " paid INTEGER NOT NULL," +
+                " comment TEXT," +
+                "UNIQUE(date, service))";
         db.execSQL(createTable);
     }
 
@@ -50,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
         contentValues.put(COMMENT, values.get("comment"));
 
-        long result = db.insert(TABLE_NAME, null, contentValues);
+        long result = db.insertOrThrow(TABLE_NAME, null, contentValues);
 
         return result != -1;
     }
