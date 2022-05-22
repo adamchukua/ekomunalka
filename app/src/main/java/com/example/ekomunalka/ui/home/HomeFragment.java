@@ -42,10 +42,9 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    ListView listView;
     DatabaseHelper db;
+    ListView listView;
     FloatingActionButton openNewRecordActivity;
-    int resultOfAddingNewRecord;
     SimpleCursorAdapter adapter;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
@@ -55,10 +54,8 @@ public class HomeFragment extends Fragment {
                     Intent data = result.getData();
 
                     if (data != null) {
-                        resultOfAddingNewRecord = data.getIntExtra("result", -1);
-
-                        if (resultOfAddingNewRecord == 1) {
-                            RefreshList();
+                        if (data.getIntExtra("result", -1) == 1) {
+                            RefreshListOfRecords();
                         }
                     }
                 }
@@ -68,11 +65,11 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        listView = view.findViewById(R.id.listView);
         db = new DatabaseHelper(getContext());
+        listView = view.findViewById(R.id.listView);
         openNewRecordActivity = view.findViewById(R.id.openNewRecordActivity);
 
-        RefreshList();
+        RefreshListOfRecords();
 
         openNewRecordActivity.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NewRecordActivity.class);
@@ -93,8 +90,7 @@ public class HomeFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public void RefreshList() {
-        ArrayList<String> arrayList = new ArrayList<>();
+    public void RefreshListOfRecords() {
         Cursor data = db.getListContents();
 
         adapter = new SimpleCursorAdapter(
@@ -107,15 +103,18 @@ public class HomeFragment extends Fragment {
         );
 
         adapter.setViewBinder((view, cursor, columnIndex) -> {
-            if(view.getId() == R.id.icon) {
-                if (cursor.getString(columnIndex).equals("Вода")) {
-                    ((ImageView)view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_water_svgrepo_com));
-                } else if (cursor.getString(columnIndex).equals("Газ")) {
-                    ((ImageView)view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_gas_svgrepo_com));
-                } else if (cursor.getString(columnIndex).equals("Електроенергія")) {
-                    ((ImageView)view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_electricity_svgrepo_com));
+            if (view.getId() == R.id.icon) {
+                switch (cursor.getString(columnIndex)) {
+                    case "Вода":
+                        ((ImageView) view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_water_svgrepo_com));
+                        break;
+                    case "Газ":
+                        ((ImageView) view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_gas_svgrepo_com));
+                        break;
+                    case "Електроенергія":
+                        ((ImageView) view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_electricity_svgrepo_com));
+                        break;
                 }
-
 
                 return true;
             }

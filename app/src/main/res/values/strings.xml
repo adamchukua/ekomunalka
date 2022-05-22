@@ -3,11 +3,16 @@
     <string name="title_home">Головна</string>
     <string name="title_notifications">Нагадування</string>
     <string name="title_settings">Налаштування</string>
-    <string name="version">Version 0.4.2.0</string>
+    <string name="version">Version 0.4.2.1</string>
     <string name="about_title_settings">Про застосунок</string>
     <string name="record_current">Поточні показання</string>
     <string name="save">Зберегти</string>
     <string name="choose_service">Оберіть тип послуги</string>
     <string name="comment">Коментар</string>
     <string name="paid">Сплачено</string>
+    <string name="water">Вода</string>
+    <string name="gas">Газ</string>
+    <string name="electricity">Електроенергія</string>
+    <string name="add_new_record_desc">Додати новий запис</string>
+    <string name="add_new_notification_desc">Додати нове нагадування</string>
 </resources>
