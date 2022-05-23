@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -151,8 +152,9 @@ public class NewRecordActivity extends AppCompatActivity {
             String current = currentReadings.getText().toString();
             String paid = isPaid.isChecked() ? "1" : "0";
             String comment = commentText.getText().toString();
+            String sum_result = sum.getText().toString().substring(0, sum.length() - 4);
 
-            Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, comment);
+            Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, sum_result, comment);
 
             if (!Objects.requireNonNull(newEntries.get("current")).isEmpty()) {
                 AddData(newEntries);
@@ -174,6 +176,7 @@ public class NewRecordActivity extends AppCompatActivity {
         }
         catch (Exception e) {
             mainActivity.Toast(this, "Щось пішло не так...", true);
+            Log.d("errorOfAddingRecord", e.getMessage());
 
             return;
         }

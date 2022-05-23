@@ -84,8 +84,9 @@ public class RecordActivity extends AppCompatActivity {
             String current = currentReadings.getText().toString();
             String paid = isPaid.isChecked() ? "1" : "0";
             String comment = commentText.getText().toString();
+            String sum_result = sum.getText().toString();
 
-            Map<String, String> newValues = GetDataFromLocal(date, service, current, paid, comment);
+            Map<String, String> newValues = GetDataFromLocal(date, service, current, paid, sum_result, comment);
 
             if (!data.equals(newValues)) {
                 UpdateData(newValues, id);
@@ -127,13 +128,14 @@ public class RecordActivity extends AppCompatActivity {
         return data;
     }
 
-    public Map<String, String> GetDataFromLocal(String date, String service, String current, String paid, String comment) {
+    public Map<String, String> GetDataFromLocal(String date, String service, String current, String paid, String sum, String comment) {
         Map<String, String> data = new HashMap<>();
 
         data.put("date", date);
         data.put("service", service);
         data.put("current", current);
         data.put("paid", paid);
+        data.put("sum", sum);
         data.put("comment", comment);
 
         return data;

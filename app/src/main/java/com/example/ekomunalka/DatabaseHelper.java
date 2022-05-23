@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "e2.db";
+    public static final String DATABASE_NAME = "e4.db";
 
     public static final String TABLE_RECORDS = "records";
     public static final String RECORDS_ID = "_id";
@@ -18,6 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RECORDS_SERVICE = "service";
     public static final String RECORDS_CURRENT = "current";
     public static final String RECORDS_PAID = "paid";
+    public static final String RECORDS_SUM = "sum";
     public static final String RECORDS_COMMENT = "comment";
 
     public static final String TABLE_TARIFFS = "tariffs";
@@ -38,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " service TEXT NOT NULL," +
                 " current INTEGER NOT NULL," +
                 " paid INTEGER NOT NULL," +
+                " sum REAL NOT NULL," +
                 " comment TEXT," +
                 "UNIQUE(date, service))";
 
@@ -64,8 +66,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RECORDS_DATE, values.get("date"));
         contentValues.put(RECORDS_SERVICE, values.get("service"));
-        contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
-        contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
+        contentValues.put(RECORDS_CURRENT, Integer.parseInt(Objects.requireNonNull(values.get("current"))));
+        contentValues.put(RECORDS_PAID, Integer.parseInt(Objects.requireNonNull(values.get("paid"))));
+        contentValues.put(RECORDS_SUM, Float.parseFloat(Objects.requireNonNull(values.get("sum"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
 
         long result = db.insertOrThrow(TABLE_RECORDS, null, contentValues);
@@ -80,6 +83,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RECORDS_SERVICE, values.get("service"));
         contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
         contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
+        contentValues.put(RECORDS_SUM, Float.parseFloat(Objects.requireNonNull(values.get("sum"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
 
         long result = db.update(TABLE_RECORDS, contentValues, "_id = ?",

@@ -98,8 +98,8 @@ public class HomeFragment extends Fragment {
                 getActivity(),
                 R.layout.mylist,
                 data,
-                new String[] { "service", "paid", "service" },
-                new int[] { R.id.title, R.id.subtitle, R.id.icon },
+                new String[] { "service", "paid", "sum", "service" },
+                new int[] { R.id.title, R.id.subtitle, R.id.resultSum, R.id.icon },
                 0
         );
 
