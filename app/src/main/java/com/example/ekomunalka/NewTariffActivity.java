@@ -3,6 +3,7 @@ package com.example.ekomunalka;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,14 +51,25 @@ public class NewTariffActivity extends AppCompatActivity {
     }
 
     public void AddData(Map<String, String> values) {
-        if (db.addTariff(values)) {
-            mainActivity.Toast(this, "Дані додані!", false);
-            Intent intent = new Intent(this, NewRecordActivity.class);
-            intent.putExtra("result", 1);
-            setResult(RESULT_OK, intent);
-            NewTariffActivity.super.onBackPressed();
-        } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+        try {
+            db.addTariff(values);
         }
+        catch (SQLiteConstraintException e) {
+            mainActivity.Toast(this,
+                    "Тариф \"" + values.get("name") + "\" вже існує", true);
+
+            return;
+        }
+        catch (Exception e) {
+            mainActivity.Toast(this, "Щось пішло не так...", true);
+
+            return;
+        }
+
+        mainActivity.Toast(this, "Дані додані!", false);
+        Intent intent = new Intent(this, NewRecordActivity.class);
+        intent.putExtra("result", 1);
+        setResult(RESULT_OK, intent);
+        NewTariffActivity.super.onBackPressed();
     }
 }
