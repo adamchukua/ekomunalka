@@ -33,6 +33,7 @@ public class NewRecordActivity extends AppCompatActivity {
     MainActivity mainActivity;
     RecordActivity recordActivity;
     EditText currentReadings;
+    EditText previousReadings;
     Spinner chooseTariff;
     Spinner chooseService;
     Spinner chooseMonth;
@@ -68,6 +69,7 @@ public class NewRecordActivity extends AppCompatActivity {
         recordActivity = new RecordActivity();
 
         currentReadings = findViewById(R.id.current);
+        previousReadings = findViewById(R.id.previous);
         chooseService = findViewById(R.id.chooseService);
         ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, mainActivity.services);
@@ -85,28 +87,30 @@ public class NewRecordActivity extends AppCompatActivity {
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
 
-        currentValidate();
+        readingsValidate();
 
         chooseMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentValidate();
+                readingsValidate();
                 sumCalculate();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         chooseService.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentValidate();
+                readingsValidate();
                 sumCalculate();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         chooseTariff.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -116,28 +120,53 @@ public class NewRecordActivity extends AppCompatActivity {
                     Intent intent = new Intent(NewRecordActivity.this, NewTariffActivity.class);
                     activityLauncher.launch(intent);
                 } else {
-                    currentValidate();
+                    readingsValidate();
                     sumCalculate();
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         currentReadings.setOnClickListener(v -> {
-            if (!currentValidate()) {
+            if (!readingsValidate()) {
                 mainActivity.Toast(NewRecordActivity.this,
                         "Спочатку оберіть сервіс, тариф та місяць!", true);
             }
         });
 
-        currentReadings.addTextChangedListener(new TextWatcher() {
+        previousReadings.setOnClickListener(v -> {
+            if (!readingsValidate()) {
+                mainActivity.Toast(NewRecordActivity.this,
+                        "Спочатку оберіть сервіс, тариф та місяць!", true);
+            }
+        });
+
+        previousReadings.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                sumCalculate();
+            }
+        });
+
+        currentReadings.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -167,14 +196,12 @@ public class NewRecordActivity extends AppCompatActivity {
     public void AddData(Map<String, String> newEntries) {
         try {
             db.addRecord(newEntries);
-        }
-        catch (SQLiteConstraintException e) {
+        } catch (SQLiteConstraintException e) {
             mainActivity.Toast(this,
                     "Сервіс \"" + newEntries.get("service") + "\" вже записаний в цьому місяці", true);
 
             return;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             mainActivity.Toast(this, "Щось пішло не так...", true);
             Log.d("errorOfAddingRecord", e.getMessage());
 
@@ -205,10 +232,13 @@ public class NewRecordActivity extends AppCompatActivity {
         return tariffs;
     }
 
-    public boolean currentValidate() {
+    public boolean readingsValidate() {
         String service = chooseService.getSelectedItem().toString();
         String tariff = chooseTariff.getSelectedItem().toString();
         String date = chooseMonth.getSelectedItem().toString();
+        String previous = previousReadings.getText().toString();
+        String previousDate = Arrays.asList(mainActivity.months)
+                .indexOf(date) - 1 + "." + Calendar.getInstance().get(Calendar.YEAR);
 
         boolean result = !service.equals("Оберіть сервіс:") &&
                 !tariff.equals("Оберіть тариф:") &&
@@ -216,6 +246,12 @@ public class NewRecordActivity extends AppCompatActivity {
 
         currentReadings.setFocusableInTouchMode(result);
         currentReadings.setFocusable(result);
+        previousReadings.setFocusableInTouchMode(result);
+        previousReadings.setFocusable(result);
+
+        if (result && previous.isEmpty()) {
+            previousReadings.setText(String.valueOf(db.getRecordPrevious(service, previousDate)));
+        }
 
         return result;
     }
@@ -224,20 +260,17 @@ public class NewRecordActivity extends AppCompatActivity {
         String service = chooseService.getSelectedItem().toString();
         String tariff = chooseTariff.getSelectedItem().toString();
         String date = chooseMonth.getSelectedItem().toString();
-        String previousDate = Arrays.asList(mainActivity.months)
-                .indexOf(date) - 1 + "." + Calendar.getInstance().get(Calendar.YEAR);
 
         if (service.equals("Оберіть сервіс:") || tariff.equals("Оберіть тариф:") || date.equals("Оберіть місяць:")) {
             return;
         }
 
-        int previous = db.getRecordPrevious(service, previousDate);
+        int previous = Integer.parseInt(previousReadings.getText().toString());
 
         int current;
         try {
             current = Integer.parseInt(currentReadings.getText().toString());
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             sum.setText("0 грн");
             return;
         }

@@ -3,12 +3,13 @@
     <string name="title_home">Головна</string>
     <string name="title_notifications">Нагадування</string>
     <string name="title_settings">Налаштування</string>
-    <string name="version">Version 0.5.5.0</string>
+    <string name="version">Version 0.5.6.0</string>
     <string name="about_title_settings">Про застосунок</string>
     <string name="record_current">Поточні показання</string>
+    <string name="record_previous">Попередні показання</string>
     <string name="save">Зберегти</string>
     <string name="choose_service">Оберіть тип послуги</string>
-    <string name="comment">Коментар</string>
+    <string name="comment">Коментар (не обов\'язково)</string>
     <string name="paid">Сплачено</string>
     <string name="water">Вода</string>
     <string name="gas">Газ</string>
