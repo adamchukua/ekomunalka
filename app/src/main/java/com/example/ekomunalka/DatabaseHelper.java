@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "e1.db";
+    public static final String DATABASE_NAME = "e2.db";
 
     public static final String TABLE_RECORDS = "records";
     public static final String RECORDS_ID = "_id";
@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTariffsTable = "CREATE TABLE " + TABLE_TARIFFS +
                 " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 " name TEXT NOT NULL," +
-                " price INT NOT NULL," +
+                " price REAL NOT NULL," +
                 " comment TEXT," +
                 "UNIQUE(name))";
 
@@ -117,7 +117,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TARIFFS_NAME, values.get("name"));
-        contentValues.put(TARIFFS_PRICE, Integer.valueOf(Objects.requireNonNull(values.get("price"))));
+        contentValues.put(TARIFFS_PRICE, Float.valueOf(Objects.requireNonNull(values.get("price"))));
         contentValues.put(TARIFFS_COMMENT, values.get("comment"));
 
         long result = db.insertOrThrow(TABLE_TARIFFS, null, contentValues);
@@ -130,12 +130,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_TARIFFS, null);
     }
 
-    public int getTariffPrice(String name) {
+    public float getTariffPrice(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor result = db.rawQuery("SELECT price FROM " + TABLE_TARIFFS + " WHERE name = '" +
                         name + "'",
                 null);
         result.moveToNext();
-        return Integer.parseInt(result.getString(0));
+        return Float.parseFloat(result.getString(0));
     }
 }

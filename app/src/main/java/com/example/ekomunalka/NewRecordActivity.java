@@ -194,7 +194,7 @@ public class NewRecordActivity extends AppCompatActivity {
         }
         listOfTariffs.add("Додати новий тариф");
 
-        String[] tariffs = listOfTariffs.toArray(new String[0]);
+        tariffs = listOfTariffs.toArray(new String[0]);
         ArrayAdapter<String> tariffsAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, tariffs);
         chooseTariff.setAdapter(tariffsAdapter);
@@ -235,10 +235,11 @@ public class NewRecordActivity extends AppCompatActivity {
             current = Integer.parseInt(currentReadings.getText().toString());
         }
         catch (NumberFormatException e) {
+            sum.setText("0 грн");
             return;
         }
 
-        int price = db.getTariffPrice(tariff);
+        float price = db.getTariffPrice(tariff);
 
         sum.setText((current - previous) * price + " грн");
     }
