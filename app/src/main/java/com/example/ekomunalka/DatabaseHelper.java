@@ -106,7 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null);
         result.moveToNext();
 
-        if (result.getString(0).isEmpty()) {
+        if (result.getCount() == 0) {
             return 0;
         }
 

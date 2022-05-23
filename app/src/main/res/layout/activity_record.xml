@@ -22,8 +22,9 @@
             android:inputType="number"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chooseService" />
+            app:layout_constraintTop_toBottomOf="@+id/chooseTariff" />
 
         <Button
             android:id="@+id/saveRecord"
@@ -59,7 +60,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/current" />
+            app:layout_constraintTop_toBottomOf="@+id/chooseService" />
 
         <Spinner
             android:id="@+id/chooseMonth"
@@ -85,7 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chooseTariff" />
+            app:layout_constraintTop_toBottomOf="@+id/current" />
 
         <CheckBox
             android:id="@+id/isPaid"
@@ -113,6 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            android:text="0 грн"
             app:layout_constraintStart_toEndOf="@+id/textView"
             app:layout_constraintTop_toBottomOf="@+id/comment" />
 

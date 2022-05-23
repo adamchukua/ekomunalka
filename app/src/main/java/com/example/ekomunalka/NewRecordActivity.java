@@ -40,7 +40,6 @@ public class NewRecordActivity extends AppCompatActivity {
     TextView sum;
     Button saveData;
     String[] tariffs;
-
     Cursor tariffs_db;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
@@ -85,7 +84,29 @@ public class NewRecordActivity extends AppCompatActivity {
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
 
-        sum.setText("0 грн");
+        currentValidate();
+
+        chooseMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentValidate();
+                sumCalculate();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        chooseService.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentValidate();
+                sumCalculate();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
         chooseTariff.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -93,42 +114,33 @@ public class NewRecordActivity extends AppCompatActivity {
                 if (position == (tariffs.length - 1)) {
                     Intent intent = new Intent(NewRecordActivity.this, NewTariffActivity.class);
                     activityLauncher.launch(intent);
+                } else {
+                    currentValidate();
+                    sumCalculate();
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
+        currentReadings.setOnClickListener(v -> {
+            if (!currentValidate()) {
+                mainActivity.Toast(NewRecordActivity.this,
+                        "Спочатку оберіть сервіс, тариф та місяць!", true);
             }
         });
 
         currentReadings.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-                String service = chooseService.getSelectedItem().toString();
-                String tariff = chooseTariff.getSelectedItem().toString();
-                String previousDate = Arrays.asList(mainActivity.months)
-                        .indexOf(chooseMonth.getSelectedItem().toString()) - 1 + "." + Calendar.getInstance().get(Calendar.YEAR);
-
-                if (service.equals("Оберіть сервіс:") || tariff.equals("Оберіть тариф:")) {
-                    return;
-                }
-
-                int previous = db.getRecordPrevious(service, previousDate);
-                int current = Integer.parseInt(currentReadings.getText().toString());
-                int price = db.getTariffPrice(tariff);
-
-                sum.setText(String.valueOf((current - previous) * price));
+                sumCalculate();
             }
         });
 
@@ -183,9 +195,51 @@ public class NewRecordActivity extends AppCompatActivity {
         listOfTariffs.add("Додати новий тариф");
 
         String[] tariffs = listOfTariffs.toArray(new String[0]);
-        ArrayAdapter<String> tariffsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, tariffs);
+        ArrayAdapter<String> tariffsAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, tariffs);
         chooseTariff.setAdapter(tariffsAdapter);
 
         return tariffs;
+    }
+
+    public boolean currentValidate() {
+        String service = chooseService.getSelectedItem().toString();
+        String tariff = chooseTariff.getSelectedItem().toString();
+        String date = chooseMonth.getSelectedItem().toString();
+
+        boolean result = !service.equals("Оберіть сервіс:") &&
+                !tariff.equals("Оберіть тариф:") &&
+                !date.equals("Оберіть місяць:");
+
+        currentReadings.setFocusableInTouchMode(result);
+        currentReadings.setFocusable(result);
+
+        return result;
+    }
+
+    public void sumCalculate() {
+        String service = chooseService.getSelectedItem().toString();
+        String tariff = chooseTariff.getSelectedItem().toString();
+        String date = chooseMonth.getSelectedItem().toString();
+        String previousDate = Arrays.asList(mainActivity.months)
+                .indexOf(date) - 1 + "." + Calendar.getInstance().get(Calendar.YEAR);
+
+        if (service.equals("Оберіть сервіс:") || tariff.equals("Оберіть тариф:") || date.equals("Оберіть місяць:")) {
+            return;
+        }
+
+        int previous = db.getRecordPrevious(service, previousDate);
+
+        int current;
+        try {
+            current = Integer.parseInt(currentReadings.getText().toString());
+        }
+        catch (NumberFormatException e) {
+            return;
+        }
+
+        int price = db.getTariffPrice(tariff);
+
+        sum.setText((current - previous) * price + " грн");
     }
 }
