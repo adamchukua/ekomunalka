@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -97,7 +98,7 @@ public class HomeFragment extends Fragment {
                 getActivity(),
                 R.layout.mylist,
                 data,
-                new String[] { "service", "date", "service" },
+                new String[] { "service", "paid", "service" },
                 new int[] { R.id.title, R.id.subtitle, R.id.icon },
                 0
         );
@@ -113,6 +114,17 @@ public class HomeFragment extends Fragment {
                         break;
                     case "Електроенергія":
                         ((ImageView) view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_electricity_svgrepo_com));
+                        break;
+                }
+
+                return true;
+            } else if (view.getId() == R.id.subtitle) {
+                switch (cursor.getString(columnIndex)) {
+                    case "0":
+                        ((TextView) view).setText("Не сплачено");
+                        break;
+                    case "1":
+                        ((TextView) view).setText("Сплачено");
                         break;
                 }
 
