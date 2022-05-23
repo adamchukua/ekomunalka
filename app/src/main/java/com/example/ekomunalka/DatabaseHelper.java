@@ -22,7 +22,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RECORDS_COMMENT = "comment";
 
     public static final String TABLE_TARIFFS = "tariffs";
-    public static final String TARIFFS_ID = "_id";
     public static final String TARIFFS_NAME = "name";
     public static final String TARIFFS_PRICE = "price";
     public static final String TARIFFS_COMMENT = "comment";
@@ -44,8 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "UNIQUE(date, service))";
 
         String createTariffsTable = "CREATE TABLE " + TABLE_TARIFFS +
-                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " name TEXT NOT NULL," +
+                " (name TEXT NOT NULL," +
                 " price REAL NOT NULL," +
                 " comment TEXT," +
                 "UNIQUE(name))";
@@ -94,7 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getRecords() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS, null);
+        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS + " ORDER BY date DESC", null);
     }
 
     public Cursor getRecord(int id) {
