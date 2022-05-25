@@ -34,6 +34,7 @@ public class RecordActivity extends AppCompatActivity {
     Spinner chooseMonth;
     Spinner chooseService;
     EditText currentReadings;
+    EditText previousReadings;
     Spinner chooseTariff;
     CheckBox isPaid;
     EditText commentText;
@@ -60,7 +61,6 @@ public class RecordActivity extends AppCompatActivity {
                 }
             });
 
-    @SuppressLint("Range")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +70,7 @@ public class RecordActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
         mainActivity = new MainActivity();
         currentReadings = findViewById(R.id.current);
+        previousReadings = findViewById(R.id.previous);
         chooseService = findViewById(R.id.chooseService);
         ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mainActivity.services);
         chooseService.setAdapter(servicesAdapter);
@@ -99,13 +100,13 @@ public class RecordActivity extends AppCompatActivity {
         commentText.setText(data.get("comment"));
         sum.setText("0 грн");
 
-        currentValidate();
+        readingsValidate();
         sumCalculate();
 
         chooseMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentValidate();
+                readingsValidate();
                 sumCalculate();
             }
 
@@ -116,7 +117,7 @@ public class RecordActivity extends AppCompatActivity {
         chooseService.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentValidate();
+                readingsValidate();
                 sumCalculate();
             }
 
@@ -131,7 +132,7 @@ public class RecordActivity extends AppCompatActivity {
                     Intent intent = new Intent(RecordActivity.this, NewTariffActivity.class);
                     activityLauncher.launch(intent);
                 } else {
-                    currentValidate();
+                    readingsValidate();
                     sumCalculate();
                 }
             }
@@ -141,7 +142,7 @@ public class RecordActivity extends AppCompatActivity {
         });
 
         currentReadings.setOnClickListener(v -> {
-            if (!currentValidate()) {
+            if (!readingsValidate()) {
                 mainActivity.Toast(RecordActivity.this,
                         "Спочатку оберіть сервіс, тариф та місяць!", true);
             }
@@ -247,7 +248,7 @@ public class RecordActivity extends AppCompatActivity {
 
         listOfTariffs.add("Оберіть тариф:");
         while (tariffs_db.moveToNext()) {
-            listOfTariffs.add(tariffs_db.getString(1));
+            listOfTariffs.add(tariffs_db.getString(0));
         }
         listOfTariffs.add("Додати новий тариф");
 
@@ -259,10 +260,13 @@ public class RecordActivity extends AppCompatActivity {
         return tariffs;
     }
 
-    public boolean currentValidate() {
+    public boolean readingsValidate() {
         String service = chooseService.getSelectedItem().toString();
         String tariff = chooseTariff.getSelectedItem().toString();
         String date = chooseMonth.getSelectedItem().toString();
+        String previous = previousReadings.getText().toString();
+        String previousDate = Arrays.asList(mainActivity.months)
+                .indexOf(date) - 1 + "." + Calendar.getInstance().get(Calendar.YEAR);
 
         boolean result = !service.equals("Оберіть сервіс:") &&
                 !tariff.equals("Оберіть тариф:") &&
@@ -270,6 +274,12 @@ public class RecordActivity extends AppCompatActivity {
 
         currentReadings.setFocusableInTouchMode(result);
         currentReadings.setFocusable(result);
+        previousReadings.setFocusableInTouchMode(result);
+        previousReadings.setFocusable(result);
+
+        if (result && previous.isEmpty()) {
+            previousReadings.setText(String.valueOf(db.getRecordPrevious(service, previousDate)));
+        }
 
         return result;
     }
@@ -278,26 +288,23 @@ public class RecordActivity extends AppCompatActivity {
         String service = chooseService.getSelectedItem().toString();
         String tariff = chooseTariff.getSelectedItem().toString();
         String date = chooseMonth.getSelectedItem().toString();
-        String previousDate = Arrays.asList(mainActivity.months)
-                .indexOf(date) - 1 + "." + Calendar.getInstance().get(Calendar.YEAR);
 
         if (service.equals("Оберіть сервіс:") || tariff.equals("Оберіть тариф:") || date.equals("Оберіть місяць:")) {
             return;
         }
 
-        int previous = db.getRecordPrevious(service, previousDate);
+        int previous = Integer.parseInt(previousReadings.getText().toString());
 
         int current;
         try {
             current = Integer.parseInt(currentReadings.getText().toString());
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             sum.setText("0 грн");
             return;
         }
 
         float price = db.getTariffPrice(tariff);
 
-        sum.setText((current - previous) * price + " грн");
+        sum.setText((double)Math.round((current - previous) * price * 100) / 100 + " грн");
     }
 }

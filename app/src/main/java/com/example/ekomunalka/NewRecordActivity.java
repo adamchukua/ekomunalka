@@ -220,7 +220,7 @@ public class NewRecordActivity extends AppCompatActivity {
 
         listOfTariffs.add("Оберіть тариф:");
         while (tariffs_db.moveToNext()) {
-            listOfTariffs.add(tariffs_db.getString(1));
+            listOfTariffs.add(tariffs_db.getString(0));
         }
         listOfTariffs.add("Додати новий тариф");
 
@@ -277,6 +277,6 @@ public class NewRecordActivity extends AppCompatActivity {
 
         float price = db.getTariffPrice(tariff);
 
-        sum.setText((current - previous) * price + " грн");
+        sum.setText((double)Math.round((current - previous) * price * 100) / 100 + " грн");
     }
 }
