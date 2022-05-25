@@ -1,7 +1,5 @@
 package com.example.ekomunalka;
 
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -13,8 +11,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.ekomunalka.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -276,7 +276,6 @@ public class NewRecordActivity extends AppCompatActivity {
         }
 
         float price = db.getTariffPrice(tariff);
-
-        sum.setText((double)Math.round((current - previous) * price * 100) / 100 + " грн");
+        sum.setText(getString(R.string.sum_value, (current - previous) * price));
     }
 }

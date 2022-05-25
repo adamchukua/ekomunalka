@@ -1,10 +1,5 @@
 package com.example.ekomunalka;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +14,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -304,7 +303,6 @@ public class RecordActivity extends AppCompatActivity {
         }
 
         float price = db.getTariffPrice(tariff);
-
-        sum.setText((double)Math.round((current - previous) * price * 100) / 100 + " грн");
+        sum.setText(getString(R.string.sum_value, (current - previous) * price));
     }
 }
