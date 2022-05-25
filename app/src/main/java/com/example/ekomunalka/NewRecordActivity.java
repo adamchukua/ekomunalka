@@ -260,22 +260,23 @@ public class NewRecordActivity extends AppCompatActivity {
         String service = chooseService.getSelectedItem().toString();
         String tariff = chooseTariff.getSelectedItem().toString();
         String date = chooseMonth.getSelectedItem().toString();
-
-        if (service.equals("Оберіть сервіс:") || tariff.equals("Оберіть тариф:") || date.equals("Оберіть місяць:")) {
-            return;
-        }
-
-        int previous = Integer.parseInt(previousReadings.getText().toString());
-
+        int previous;
         int current;
+        float price;
+
+        if (service.equals("Оберіть сервіс:") ||
+                tariff.equals("Оберіть тариф:") ||
+                date.equals("Оберіть місяць:")) return;
+
+        price = db.getTariffPrice(tariff);
+
+        previous = Integer.parseInt(previousReadings.getText().toString());
         try {
             current = Integer.parseInt(currentReadings.getText().toString());
         } catch (NumberFormatException e) {
-            sum.setText("0 грн");
+            sum.setText(getString(R.string.sum_value, 0));
             return;
         }
-
-        float price = db.getTariffPrice(tariff);
         sum.setText(getString(R.string.sum_value, (current - previous) * price));
     }
 }
