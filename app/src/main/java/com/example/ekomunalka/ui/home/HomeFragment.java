@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -31,6 +32,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.ekomunalka.DatabaseHelper;
+import com.example.ekomunalka.MainActivity;
 import com.example.ekomunalka.NewRecordActivity;
 import com.example.ekomunalka.R;
 import com.example.ekomunalka.RecordActivity;
@@ -38,15 +40,19 @@ import com.example.ekomunalka.databinding.FragmentHomeBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+    MainActivity mainActivity;
     DatabaseHelper db;
     ListView listView;
     FloatingActionButton openNewRecordActivity;
     SimpleCursorAdapter adapter;
+    String previousDate;
+    int temp;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -67,6 +73,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         db = new DatabaseHelper(getContext());
+        mainActivity = new MainActivity();
         listView = view.findViewById(R.id.listView);
         openNewRecordActivity = view.findViewById(R.id.openNewRecordActivity);
 
@@ -93,19 +100,22 @@ public class HomeFragment extends Fragment {
 
     public void RefreshListOfRecords() {
         Cursor data = db.getRecords();
+        previousDate = "";
 
         adapter = new SimpleCursorAdapter(
                 getActivity(),
                 R.layout.mylist,
                 data,
-                new String[] { "service", "paid", "sum", "service" },
-                new int[] { R.id.title, R.id.subtitle, R.id.resultSum, R.id.icon },
+                new String[] { "service", "paid", "sum", "service", "date" },
+                new int[] { R.id.title, R.id.subtitle, R.id.resultSum, R.id.icon, R.id.date },
                 0
         );
 
         adapter.setViewBinder((view, cursor, columnIndex) -> {
+            String field = cursor.getString(columnIndex);
+
             if (view.getId() == R.id.icon) {
-                switch (cursor.getString(columnIndex)) {
+                switch (field) {
                     case "Вода":
                         ((ImageView) view).setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_water_svgrepo_com));
                         break;
@@ -119,7 +129,7 @@ public class HomeFragment extends Fragment {
 
                 return true;
             } else if (view.getId() == R.id.subtitle) {
-                switch (cursor.getString(columnIndex)) {
+                switch (field) {
                     case "0":
                         ((TextView) view).setText("Не сплачено");
                         break;
@@ -127,6 +137,23 @@ public class HomeFragment extends Fragment {
                         ((TextView) view).setText("Сплачено");
                         break;
                 }
+
+                return true;
+            } else if (view.getId() == R.id.date) {
+                int month = Integer.parseInt(field.substring(0, field.length() - 5));
+
+                if (field.equals(previousDate)) {
+                    view.setVisibility(View.INVISIBLE);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0,0,0,0);
+                    params.height = 0;
+                    view.setLayoutParams(params);
+                }
+
+                ((TextView) view).setText(mainActivity.months[month].toLowerCase(Locale.ROOT) +
+                        " " + field.substring(field.length() - 4));
+                previousDate = field;
 
                 return true;
             }
