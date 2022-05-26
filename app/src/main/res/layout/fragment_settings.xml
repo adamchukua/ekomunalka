@@ -7,13 +7,14 @@
     tools:context=".ui.settings.SettingsFragment">
 
     <ListView
-        android:id="@+id/settingsList"
+        android:id="@+id/informationList"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settingsListTitle" />
 
@@ -24,9 +25,34 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:autoSizeTextType="uniform"
-        android:text="Інформація"
+        android:text="@string/information"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="?colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/settingsListTitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        android:autoSizeTextType="uniform"
+        android:text="@string/title_settings"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="?colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/informationList" />
+
+    <ListView
+        android:id="@+id/settingsList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsListTitle2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
