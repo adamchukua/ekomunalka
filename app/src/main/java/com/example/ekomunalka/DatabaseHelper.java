@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "e5.db";
+    public static final String DATABASE_NAME = "e6.db";
 
     public static final String TABLE_RECORDS = "records";
     public static final String RECORDS_ID = "_id";
@@ -26,6 +26,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TARIFFS_NAME = "name";
     public static final String TARIFFS_PRICE = "price";
     public static final String TARIFFS_COMMENT = "comment";
+
+    public static final String TABLE_NOTIFICATIONS = "notifications";
+    public static final String NOTIFICATIONS_ID = "_id";
+    public static final String NOTIFICATIONS_TITLE = "title";
+    public static final String NOTIFICATIONS_SUBTITLE = "subtitle";
+    public static final String NOTIFICATIONS_DAY = "day";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -50,8 +56,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " comment TEXT," +
                 "UNIQUE(name))";
 
+        String createNotificationsTable = "CREATE TABLE " + TABLE_NOTIFICATIONS +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " title TEXT NOT NULL," +
+                " subtitle TEXT NOT NULL," +
+                " day INTEGER NOT NULL)";
+
         db.execSQL(createRecordsTable);
         db.execSQL(createTariffsTable);
+        db.execSQL(createNotificationsTable);
     }
 
     @Override
@@ -176,5 +189,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_RECORDS);
         db.execSQL("DELETE FROM " + TABLE_TARIFFS);
+    }
+
+    public boolean addNotification(Map<String, String> values) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NOTIFICATIONS_TITLE, values.get("title"));
+        contentValues.put(NOTIFICATIONS_SUBTITLE, values.get("subtitle"));
+        contentValues.put(NOTIFICATIONS_DAY, Integer.parseInt(Objects.requireNonNull(values.get("day"))));
+
+        long result = db.insertOrThrow(TABLE_NOTIFICATIONS, null, contentValues);
+
+        return result != -1;
+    }
+
+    public Cursor getNotifications() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NOTIFICATIONS, null);
+    }
+
+    public Cursor getNotification(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NOTIFICATIONS + " WHERE _id = " + id,
+                null);
+    }
+
+    public boolean updateNotification(Map<String, String> values, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NOTIFICATIONS_TITLE, values.get("title"));
+        contentValues.put(NOTIFICATIONS_SUBTITLE, values.get("subtitle"));
+        contentValues.put(NOTIFICATIONS_DAY, Integer.parseInt(Objects.requireNonNull(values.get("day"))));
+
+        long result = db.update(TABLE_NOTIFICATIONS, contentValues, "_id = ?",
+                new String[]{String.valueOf(id)});
+
+        return result != -1;
+    }
+
+    public boolean deleteNotification(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NOTIFICATIONS, NOTIFICATIONS_ID + "=" + id, null) > 0;
     }
 }

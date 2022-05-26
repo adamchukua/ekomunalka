@@ -10,15 +10,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EKomunalka">
         <activity
-            android:name=".TariffsActivity"
-            android:label="@string/tariffs"
+            android:name=".NotificationActivity"
+            android:label="Редагувати нагадування"
             android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".TariffActivity"
-            android:parentActivityName=".TariffsActivity"
-            android:label="Редагувати тариф"
+            android:name=".NewNotificationActivity"
+            android:label="Додати нове нагадування"
+            android:parentActivityName=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".TariffsActivity"
+            android:exported="false"
+            android:label="@string/tariffs"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".TariffActivity"
+            android:exported="false"
+            android:label="Редагувати тариф"
+            android:parentActivityName=".TariffsActivity" />
         <activity
             android:name=".NewTariffActivity"
             android:exported="false"

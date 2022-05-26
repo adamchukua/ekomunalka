@@ -70,7 +70,8 @@ public class SettingsFragment extends Fragment {
                 {"Розробник", "@thegradle"}};
         String[][] settingsItems =
                 {{"Тарифи", "Додати, змінити чи видалити тарифи"},
-                {"Скинути дані", "Всі записи та тарифи будуть видалені"}};
+                {"Скинути дані", "Всі записи, тарифи та нагадування будуть видалені"},
+                {"Створити бекап", "Всі записи та тарифи будуть збережені у файлі, який ви зможете зберігати на будь-якому сховищі"}};
 
         db = new DatabaseHelper(getContext());
         mainActivity = new MainActivity();
@@ -113,17 +114,24 @@ public class SettingsFragment extends Fragment {
         settings.setAdapter(settingsAdapter);
 
         settings.setOnItemClickListener((parent, view1, position, id) -> {
-            if (position == 0) {
-                Intent intent = new Intent(getActivity(), TariffsActivity.class);
-                activityLauncher.launch(intent);
-            } else if (position == 1) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Видалити всі дані?")
-                        .setMessage("Ви дійсно хочете видалити всі записи та всі тарифи?")
-                        .setNegativeButton(R.string.cancel, null)
-                        .setPositiveButton(R.string.yes, (arg0, arg1) ->
-                                clearData())
-                        .create().show();
+            switch (position) {
+                case 0:
+                    Intent tariffsActivity = new Intent(getActivity(), TariffsActivity.class);
+                    activityLauncher.launch(tariffsActivity);
+                    break;
+                case 1:
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Видалити всі дані?")
+                            .setMessage("Ви дійсно хочете видалити всі записи, всі тарифи та всі нагадування?")
+                            .setNegativeButton(R.string.cancel, null)
+                            .setPositiveButton(R.string.yes, (arg0, arg1) ->
+                                    clearData())
+                            .create().show();
+                    break;
+                case 2:
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    activityLauncher.launch(intent);
+                    break;
             }
         });
     }

@@ -84,7 +84,7 @@ public class TariffActivity extends AppCompatActivity {
 
     public void deleteTariff() {
         if (db.deleteTariff(id)) {
-            mainActivity.Toast(this, "Тариф видалено!", false);
+            mainActivity.Toast(this, "Нагадування видалено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
             setResult(RESULT_OK, intent);
