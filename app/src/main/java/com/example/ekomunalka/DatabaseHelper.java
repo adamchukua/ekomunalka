@@ -115,6 +115,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return Integer.parseInt(result.getString(0));
     }
 
+    public boolean deleteRecord(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_RECORDS, RECORDS_ID + "=" + id, null) > 0;
+    }
+
     public boolean addTariff(Map<String, String> values) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

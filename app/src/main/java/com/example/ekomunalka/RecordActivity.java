@@ -1,11 +1,15 @@
 package com.example.ekomunalka;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -183,6 +187,40 @@ public class RecordActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.delete, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.deleteRecord) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Видалити запис?")
+                    .setMessage("Ви дійсно хочете видалити цей запис?")
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.yes, (arg0, arg1) ->
+                            deleteRecord())
+                    .create().show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteRecord() {
+        if (db.deleteRecord(id)) {
+            mainActivity.Toast(this, "Запис видалено!", false);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("result", 1);
+            setResult(RESULT_OK, intent);
+            RecordActivity.super.onBackPressed();
+        } else {
+            mainActivity.Toast(this, "Щось пішло не так...", true);
+        }
     }
 
     public void UpdateData(Map<String, String> newValues, int id) {

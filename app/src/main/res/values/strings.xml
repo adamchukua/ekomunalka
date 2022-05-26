@@ -3,7 +3,7 @@
     <string name="title_home">Головна</string>
     <string name="title_notifications">Нагадування</string>
     <string name="title_settings">Налаштування</string>
-    <string name="version">0.6.2.0</string>
+    <string name="version">0.7.0.0</string>
     <string name="about_title_settings">Про застосунок</string>
     <string name="record_current">Поточні показання</string>
     <string name="record_previous">Попередні показання</string>
@@ -20,4 +20,6 @@
     <string name="sum_value">%.2f грн</string>
     <string name="name">Назва</string>
     <string name="price">Ціна за одинию</string>
+    <string name="yes">Так</string>
+    <string name="cancel">Закрити</string>
 </resources>
