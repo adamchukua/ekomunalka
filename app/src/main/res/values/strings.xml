@@ -23,4 +23,6 @@
     <string name="price">Ціна за одинию</string>
     <string name="yes">Так</string>
     <string name="cancel">Закрити</string>
+    <string name="tariffs">Тарифи</string>
+    <string name="tariff_price">%s грн за одиницю</string>
 </resources>

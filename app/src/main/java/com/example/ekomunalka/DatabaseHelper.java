@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "e4.db";
+    public static final String DATABASE_NAME = "e5.db";
 
     public static final String TABLE_RECORDS = "records";
     public static final String RECORDS_ID = "_id";
@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RECORDS_COMMENT = "comment";
 
     public static final String TABLE_TARIFFS = "tariffs";
+    public static final String TARIFFS_ID = "_id";
     public static final String TARIFFS_NAME = "name";
     public static final String TARIFFS_PRICE = "price";
     public static final String TARIFFS_COMMENT = "comment";
@@ -43,7 +44,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "UNIQUE(date, service))";
 
         String createTariffsTable = "CREATE TABLE " + TABLE_TARIFFS +
-                " (name TEXT NOT NULL," +
+                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " name TEXT NOT NULL," +
                 " price REAL NOT NULL," +
                 " comment TEXT," +
                 "UNIQUE(name))";
@@ -144,5 +146,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null);
         result.moveToNext();
         return Float.parseFloat(result.getString(0));
+    }
+
+    public boolean deleteTariff(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_TARIFFS, TARIFFS_ID + "=" + id, null) > 0;
+    }
+
+    public boolean updateTariff(Map<String, String> values, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TARIFFS_NAME, values.get("name"));
+        contentValues.put(TARIFFS_PRICE, Float.parseFloat(Objects.requireNonNull(values.get("price"))));
+        contentValues.put(TARIFFS_COMMENT, values.get("comment"));
+
+        long result = db.update(TABLE_TARIFFS, contentValues, "_id = ?",
+                new String[]{String.valueOf(id)});
+
+        return result != -1;
+    }
+
+    public Cursor getTariff(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_TARIFFS + " WHERE _id = " + id,
+                null);
     }
 }

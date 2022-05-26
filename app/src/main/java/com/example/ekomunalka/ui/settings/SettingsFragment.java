@@ -1,12 +1,17 @@
 package com.example.ekomunalka.ui.settings;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import com.example.ekomunalka.DatabaseHelper;
 import com.example.ekomunalka.MainActivity;
 import com.example.ekomunalka.R;
+import com.example.ekomunalka.TariffActivity;
+import com.example.ekomunalka.TariffsActivity;
 import com.example.ekomunalka.databinding.FragmentSettingsBinding;
 
 import java.util.ArrayList;
@@ -30,6 +37,20 @@ public class SettingsFragment extends Fragment {
     private ListView settings;
     private SimpleAdapter infoAdapter;
     private SimpleAdapter settingsAdapter;
+
+    ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+
+                    /*if (data != null) {
+                        if (data.getIntExtra("result", -1) == 1) {
+                            RefreshListOfRecords();
+                        }
+                    }*/
+                }
+            });
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +108,11 @@ public class SettingsFragment extends Fragment {
 
         info.setAdapter(infoAdapter);
         settings.setAdapter(settingsAdapter);
+
+        settings.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent intent = new Intent(getActivity(), TariffsActivity.class);
+            activityLauncher.launch(intent);
+        });
     }
 
     @Override

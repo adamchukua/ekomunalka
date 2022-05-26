@@ -287,7 +287,7 @@ public class RecordActivity extends AppCompatActivity {
 
         listOfTariffs.add("Оберіть тариф:");
         while (tariffs_db.moveToNext()) {
-            listOfTariffs.add(tariffs_db.getString(0));
+            listOfTariffs.add(tariffs_db.getString(1));
         }
         listOfTariffs.add("Додати новий тариф");
 

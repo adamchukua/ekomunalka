@@ -10,7 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EKomunalka">
         <activity
+            android:name=".TariffsActivity"
+            android:label="@string/tariffs"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".TariffActivity"
+            android:parentActivityName=".TariffsActivity"
+            android:label="Редагувати тариф"
             android:exported="false" />
         <activity
             android:name=".NewTariffActivity"
