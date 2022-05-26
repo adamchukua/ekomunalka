@@ -4,7 +4,7 @@
     <string name="title_notifications">Нагадування</string>
     <string name="title_settings">Налаштування</string>
     <string name="information">Інформація</string>
-    <string name="version">0.7.0.0</string>
+    <string name="version">0.7.0.1</string>
     <string name="about_title_settings">Про застосунок</string>
     <string name="record_current">Поточні показання</string>
     <string name="record_previous">Попередні показання</string>
@@ -25,4 +25,5 @@
     <string name="cancel">Закрити</string>
     <string name="tariffs">Тарифи</string>
     <string name="tariff_price">%s грн за одиницю</string>
+    <string name="empty">Тут поки що нічого немає…</string>
 </resources>

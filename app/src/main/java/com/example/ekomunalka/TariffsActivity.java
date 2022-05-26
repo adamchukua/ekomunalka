@@ -27,7 +27,6 @@ public class TariffsActivity extends AppCompatActivity {
 
     private DatabaseHelper db;
     private ListView tariffsList;
-    private String[] tariffs;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

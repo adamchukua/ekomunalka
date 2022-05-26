@@ -36,6 +36,7 @@ public class HomeFragment extends Fragment {
     MainActivity mainActivity;
     DatabaseHelper db;
     ListView listView;
+    private TextView empty;
     FloatingActionButton openNewRecordActivity;
     SimpleCursorAdapter adapter;
     String previousDate;
@@ -61,6 +62,7 @@ public class HomeFragment extends Fragment {
         db = new DatabaseHelper(getContext());
         mainActivity = new MainActivity();
         listView = view.findViewById(R.id.listView);
+        empty = view.findViewById(R.id.empty);
         openNewRecordActivity = view.findViewById(R.id.openNewRecordActivity);
 
         RefreshListOfRecords();
@@ -147,6 +149,7 @@ public class HomeFragment extends Fragment {
             return false;
         });
 
+        listView.setEmptyView(empty);
         listView.setAdapter(adapter);
     }
 
