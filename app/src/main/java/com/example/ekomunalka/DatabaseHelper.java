@@ -171,4 +171,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_TARIFFS + " WHERE _id = " + id,
                 null);
     }
+
+    public void clearData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_RECORDS);
+        db.execSQL("DELETE FROM " + TABLE_TARIFFS);
+    }
 }

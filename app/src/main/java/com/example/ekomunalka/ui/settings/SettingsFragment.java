@@ -1,7 +1,9 @@
 package com.example.ekomunalka.ui.settings;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +69,8 @@ public class SettingsFragment extends Fragment {
                 {{"Версія", getActivity().getResources().getString(R.string.version)},
                 {"Розробник", "@thegradle"}};
         String[][] settingsItems =
-                {{"Тарифи", "Додати, змінити чи видалити тарифи"}};
+                {{"Тарифи", "Додати, змінити чи видалити тарифи"},
+                {"Скинути дані", "Всі записи та тарифи будуть видалені"}};
 
         db = new DatabaseHelper(getContext());
         mainActivity = new MainActivity();
@@ -110,8 +113,18 @@ public class SettingsFragment extends Fragment {
         settings.setAdapter(settingsAdapter);
 
         settings.setOnItemClickListener((parent, view1, position, id) -> {
-            Intent intent = new Intent(getActivity(), TariffsActivity.class);
-            activityLauncher.launch(intent);
+            if (position == 0) {
+                Intent intent = new Intent(getActivity(), TariffsActivity.class);
+                activityLauncher.launch(intent);
+            } else if (position == 1) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Видалити всі дані?")
+                        .setMessage("Ви дійсно хочете видалити всі записи та всі тарифи?")
+                        .setNegativeButton(R.string.cancel, null)
+                        .setPositiveButton(R.string.yes, (arg0, arg1) ->
+                                clearData())
+                        .create().show();
+            }
         });
     }
 
@@ -119,5 +132,10 @@ public class SettingsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void clearData() {
+        db.clearData();
+        mainActivity.Toast(getActivity(), "Дані очищено!", true);
     }
 }
