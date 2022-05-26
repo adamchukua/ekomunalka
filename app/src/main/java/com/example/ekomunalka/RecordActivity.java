@@ -57,6 +57,8 @@ public class RecordActivity extends AppCompatActivity {
                             refreshListOfTariffs();
                         }
                     }
+
+                    chooseTariff.setSelection(0);
                 }
             });
 
@@ -301,7 +303,7 @@ public class RecordActivity extends AppCompatActivity {
         try {
             current = Integer.parseInt(currentReadings.getText().toString());
         } catch (NumberFormatException e) {
-            sum.setText(getString(R.string.sum_value, 0));
+            sum.setText(getString(R.string.sum_value, 0.f));
             return;
         }
         sum.setText(getString(R.string.sum_value, (current - previous) * price));
