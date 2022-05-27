@@ -14,8 +14,10 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -118,6 +120,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     public void updateNotification(Map<String, String> newValues) {
         if (db.updateNotification(newValues, id)) {
+            createNotification(newValues, id);
             mainActivity.Toast(this, "Дані оновлено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
@@ -126,5 +129,18 @@ public class NotificationActivity extends AppCompatActivity {
         } else {
             mainActivity.Toast(this, "Щось пішло не так...", true);
         }
+    }
+
+    public void createNotification(Map<String, String> data, int id) {
+        Calendar calendar = Calendar.getInstance();
+        Intent reminderReceiver = new Intent(this, ReminderReceiver.class);
+        reminderReceiver.putExtra("id", id);
+        reminderReceiver.putExtra("title", data.get("title"));
+        reminderReceiver.putExtra("subtitle", data.get("subtitle"));
+        reminderReceiver.putExtra("day", Integer.parseInt(Objects.requireNonNull(data.get("day"))));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, reminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 }

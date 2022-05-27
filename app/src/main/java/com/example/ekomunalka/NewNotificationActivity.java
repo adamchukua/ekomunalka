@@ -64,18 +64,7 @@ public class NewNotificationActivity extends AppCompatActivity {
         int id = db.addNotification(data);
 
         if (id != -1) {
-            createNotificationChannel();
-            Calendar calendar = Calendar.getInstance();
-            Intent reminderReceiver = new Intent(this, ReminderReceiver.class);
-            reminderReceiver.putExtra("id", id);
-            reminderReceiver.putExtra("title", data.get("title"));
-            reminderReceiver.putExtra("subtitle", data.get("subtitle"));
-            reminderReceiver.putExtra("day", Integer.parseInt(Objects.requireNonNull(data.get("day"))));
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, reminderReceiver, 0);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
+            createNotification(data, id);
             mainActivity.Toast(this, "Нагадування створено!", false);
             Intent mainActivity = new Intent(this, MainActivity.class);
             mainActivity.putExtra("result", 1);
@@ -85,6 +74,20 @@ public class NewNotificationActivity extends AppCompatActivity {
         } else {
             mainActivity.Toast(this, "Щось пішло не так...", true);
         }
+    }
+
+    public void createNotification(Map<String, String> data, int id) {
+        createNotificationChannel();
+        Calendar calendar = Calendar.getInstance();
+        Intent reminderReceiver = new Intent(this, ReminderReceiver.class);
+        reminderReceiver.putExtra("id", id);
+        reminderReceiver.putExtra("title", data.get("title"));
+        reminderReceiver.putExtra("subtitle", data.get("subtitle"));
+        reminderReceiver.putExtra("day", Integer.parseInt(Objects.requireNonNull(data.get("day"))));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, reminderReceiver, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     public void createNotificationChannel() {
