@@ -69,7 +69,6 @@ public class NotificationsFragment extends Fragment {
 
         db = new DatabaseHelper(getActivity());
 
-        Button notifyBtn = view.findViewById(R.id.button);
         openNewNotificationActivity = view.findViewById(R.id.openNewNotificationActivity);
         notificationList = view.findViewById(R.id.notificationList);
         empty = view.findViewById(R.id.emptyNotifications);
@@ -86,23 +85,6 @@ public class NotificationsFragment extends Fragment {
         });
 
         refreshListOfNotifications();
-
-        NotificationChannel channel = new NotificationChannel("My Notification", "My Notification", NotificationManager.IMPORTANCE_DEFAULT);
-        NotificationManager manager = getActivity().getSystemService(NotificationManager.class);
-        manager.createNotificationChannel(channel);
-        notifyBtn.setOnClickListener(view1 -> {
-            NotificationCompat.Builder builder =
-                    new NotificationCompat.Builder(getActivity(), "My Notification")
-                    .setContentTitle("Тестове повідомлення")
-                    .setContentText("Привіт! Дякую що натиснув на цю кнопочку, ось тобі тестовий текст повідомлення")
-                    .setSmallIcon(R.drawable.ic_stat_logo)
-                    .setAutoCancel(true)
-                    .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText("Привіт! Дякую що натиснув на цю кнопочку, ось тобі тестовий текст повідомлення"));
-
-            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getActivity());
-            managerCompat.notify(1, builder.build());
-        });
     }
 
     @Override

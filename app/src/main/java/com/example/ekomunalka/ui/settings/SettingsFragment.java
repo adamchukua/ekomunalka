@@ -3,6 +3,7 @@ package com.example.ekomunalka.ui.settings;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.ekomunalka.DatabaseHelper;
@@ -76,7 +79,9 @@ public class SettingsFragment extends Fragment {
         String[][] settingsItems =
                 {{"Тарифи", "Додати, змінити чи видалити тарифи"},
                 {"Скинути дані", "Всі записи, тарифи та нагадування будуть видалені"},
-                {"Створити бекап", "Всі записи та тарифи будуть збережені у файлі, який ви зможете зберігати на будь-якому сховищі"}};
+                {"Створити бекап", "Всі записи та тарифи будуть збережені у файлі, який ви зможете зберігати на будь-якому сховищі"},
+                {"Відновити бекап", "Всі записи та тарифи будуть відновлені з файлу"},
+                {"Тестове повідомлення", "Отримати тестове повідомлення, аби дізнатись чи все працює"}};
 
         db = new DatabaseHelper(getContext());
         mainActivity = new MainActivity();
@@ -134,8 +139,30 @@ public class SettingsFragment extends Fragment {
                             .create().show();
                     break;
                 case 2:
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    activityLauncher.launch(intent);
+                case 3:
+                    Intent backup = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                    activityLauncher.launch(backup);
+                    // TODO: backup
+                    // TODO: restore
+                    break;
+                case 4:
+                    NotificationChannel channel = new NotificationChannel(
+                            "Тестове повідомлення",
+                            "Тестове повідомлення",
+                            NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager manager = getActivity().getSystemService(NotificationManager.class);
+                    manager.createNotificationChannel(channel);
+                    NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(getActivity(), "Тестове повідомлення")
+                                    .setContentTitle("Тестове повідомлення")
+                                    .setContentText("Привіт! Дякую що натиснув на цю кнопочку, ось тобі тестовий текст повідомлення")
+                                    .setSmallIcon(R.drawable.ic_stat_logo)
+                                    .setAutoCancel(true)
+                                    .setStyle(new NotificationCompat.BigTextStyle()
+                                            .bigText("Привіт! Дякую що натиснув на цю кнопочку, ось тобі тестовий текст повідомлення"));
+
+                    NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getActivity());
+                    managerCompat.notify(1, builder.build());
                     break;
             }
         });
