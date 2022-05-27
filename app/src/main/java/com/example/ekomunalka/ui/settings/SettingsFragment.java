@@ -1,8 +1,12 @@
 package com.example.ekomunalka.ui.settings;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.ekomunalka.DatabaseHelper;
 import com.example.ekomunalka.MainActivity;
+import com.example.ekomunalka.NotificationActivity;
 import com.example.ekomunalka.R;
 import com.example.ekomunalka.TariffActivity;
 import com.example.ekomunalka.TariffsActivity;

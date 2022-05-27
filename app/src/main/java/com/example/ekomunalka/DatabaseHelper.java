@@ -189,9 +189,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_RECORDS);
         db.execSQL("DELETE FROM " + TABLE_TARIFFS);
+        db.execSQL("DELETE FROM " + TABLE_NOTIFICATIONS);
     }
 
-    public boolean addNotification(Map<String, String> values) {
+    public int addNotification(Map<String, String> values) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(NOTIFICATIONS_TITLE, values.get("title"));
@@ -199,8 +200,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(NOTIFICATIONS_DAY, Integer.parseInt(Objects.requireNonNull(values.get("day"))));
 
         long result = db.insertOrThrow(TABLE_NOTIFICATIONS, null, contentValues);
-
-        return result != -1;
+        return (int) result;
     }
 
     public Cursor getNotifications() {

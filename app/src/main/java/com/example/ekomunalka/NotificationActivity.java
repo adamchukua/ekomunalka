@@ -2,7 +2,10 @@ package com.example.ekomunalka;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ public class NotificationActivity extends AppCompatActivity {
     private EditText subtitle;
     private EditText day;
     private Button save;
+    private AlarmManager alarmManager;
     private int id;
 
     @Override
@@ -37,6 +41,7 @@ public class NotificationActivity extends AppCompatActivity {
         day = findViewById(R.id.dayNotification);
         save = findViewById(R.id.saveNotification);
         id = (int) getIntent().getLongExtra("id", -1);
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         getNotification();
 
@@ -84,7 +89,8 @@ public class NotificationActivity extends AppCompatActivity {
 
     public void deleteNotification() {
         if (db.deleteNotification(id)) {
-            mainActivity.Toast(this, "Тариф видалено!", false);
+            cancelNotification(this, id);
+            mainActivity.Toast(this, "Нагадування видалено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
             setResult(RESULT_OK, intent);
@@ -92,6 +98,12 @@ public class NotificationActivity extends AppCompatActivity {
         } else {
             mainActivity.Toast(this, "Щось пішло не так...", true);
         }
+    }
+
+    public void cancelNotification(Context context, int id) {
+        Intent reminderReceiver = new Intent(context, ReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, reminderReceiver, 0);
+        alarmManager.cancel(pendingIntent);
     }
 
     public void getNotification() {
