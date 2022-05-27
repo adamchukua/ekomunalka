@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -27,6 +29,8 @@ public class TariffsActivity extends AppCompatActivity {
 
     private DatabaseHelper db;
     private ListView tariffsList;
+    private TextView empty;
+    private FloatingActionButton openNewTariffActivity;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -50,19 +54,19 @@ public class TariffsActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
 
         tariffsList = findViewById(R.id.tariffsList);
+        openNewTariffActivity = findViewById(R.id.openNewTariffActivity);
+        empty = findViewById(R.id.emptyTariffs);
 
         refreshListOfTariffs();
 
+        openNewTariffActivity.setOnClickListener(v -> {
+            Intent intent = new Intent(TariffsActivity.this, NewTariffActivity.class);
+            activityLauncher.launch(intent);
+        });
+
         tariffsList.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent;
-
-            if (id == 999) {
-                intent = new Intent(TariffsActivity.this, NewTariffActivity.class);
-            } else {
-                intent = new Intent(TariffsActivity.this, TariffActivity.class);
-                intent.putExtra("id", id);
-            }
-
+            Intent intent = new Intent(TariffsActivity.this, TariffActivity.class);
+            intent.putExtra("id", id);
             activityLauncher.launch(intent);
         });
     }
@@ -70,14 +74,10 @@ public class TariffsActivity extends AppCompatActivity {
     public void refreshListOfTariffs() {
         Cursor data = db.getTariffs();
 
-        MatrixCursor matrixCursor = new MatrixCursor(new String[] { "_id", "name", "comment" });
-        matrixCursor.addRow(new Object[] { "999", "Додати новий тариф", "Додайте новий тариф, ввівши назву та ціну за одиницю" });
-        MergeCursor mergeCursor = new MergeCursor(new Cursor[] { matrixCursor, data });
-
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 this,
                 R.layout.mylist1,
-                mergeCursor,
+                data,
                 new String[] { "name", "comment" },
                 new int[] { R.id.title, R.id.subtitle },
                 0
@@ -95,6 +95,7 @@ public class TariffsActivity extends AppCompatActivity {
             return false;
         });
 
+        tariffsList.setEmptyView(empty);
         tariffsList.setAdapter(adapter);
     }
 }
