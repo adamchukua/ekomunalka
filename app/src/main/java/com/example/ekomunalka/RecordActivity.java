@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,7 @@ public class RecordActivity extends AppCompatActivity {
     Cursor receivedItem;
     Cursor tariffs_db;
     int id;
+    int tariff_id;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -86,6 +88,7 @@ public class RecordActivity extends AppCompatActivity {
         chooseTariff = findViewById(R.id.chooseTariff);
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
+        tariff_id = -1;
 
         Intent receivedIntent = getIntent();
         id = (int) receivedIntent.getLongExtra("id", -1);
@@ -100,6 +103,7 @@ public class RecordActivity extends AppCompatActivity {
         chooseMonth.setAdapter(monthsAdapter);
         chooseMonth.setSelection(Integer.parseInt(Objects.requireNonNull(data.get("date")).substring(0, Objects.requireNonNull(data.get("date")).length() - 5)));
         chooseService.setSelection(chosenServiceId);
+        chooseTariff.setSelection(Integer.parseInt(Objects.requireNonNull(data.get("tariff_id"))));
         currentReadings.setText(data.get("current"));
         isPaid.setChecked(Objects.equals(data.get("paid"), "1"));
         commentText.setText(data.get("comment"));
@@ -139,6 +143,7 @@ public class RecordActivity extends AppCompatActivity {
                 } else {
                     readingsValidate();
                     sumCalculate();
+                    tariff_id = position;
                 }
             }
 
@@ -174,8 +179,9 @@ public class RecordActivity extends AppCompatActivity {
             String paid = isPaid.isChecked() ? "1" : "0";
             String comment = commentText.getText().toString();
             String sum_result = sum.getText().toString();
+            String tariff = String.valueOf(tariff_id);
 
-            Map<String, String> newValues = GetDataFromLocal(date, service, current, paid, sum_result, comment);
+            Map<String, String> newValues = GetDataFromLocal(date, service, current, paid, sum_result, tariff, comment);
 
             if (!data.equals(newValues)) {
                 UpdateData(newValues, id);
@@ -245,13 +251,15 @@ public class RecordActivity extends AppCompatActivity {
             data.put("service", receivedItem.getString(2));
             data.put("current", receivedItem.getString(3));
             data.put("paid", receivedItem.getString(4));
-            data.put("comment", receivedItem.getString(5));
+            data.put("sum", receivedItem.getString(5));
+            data.put("tariff_id", receivedItem.getString(6));
+            data.put("comment", receivedItem.getString(7));
         }
 
         return data;
     }
 
-    public Map<String, String> GetDataFromLocal(String date, String service, String current, String paid, String sum, String comment) {
+    public Map<String, String> GetDataFromLocal(String date, String service, String current, String paid, String sum, String tariff_id, String comment) {
         Map<String, String> data = new HashMap<>();
 
         data.put("date", date);
@@ -259,6 +267,7 @@ public class RecordActivity extends AppCompatActivity {
         data.put("current", current);
         data.put("paid", paid);
         data.put("sum", sum);
+        data.put("tariff_id", tariff_id);
         data.put("comment", comment);
 
         return data;

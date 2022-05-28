@@ -43,6 +43,7 @@ public class NewRecordActivity extends AppCompatActivity {
     Button saveData;
     String[] tariffs;
     Cursor tariffs_db;
+    int tariff_id;
 
     ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -88,6 +89,7 @@ public class NewRecordActivity extends AppCompatActivity {
         chooseTariff = findViewById(R.id.chooseTariff);
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
+        tariff_id = -1;
 
         readingsValidate();
 
@@ -124,6 +126,7 @@ public class NewRecordActivity extends AppCompatActivity {
                 } else {
                     readingsValidate();
                     sumCalculate();
+                    tariff_id = position;
                 }
             }
 
@@ -184,8 +187,9 @@ public class NewRecordActivity extends AppCompatActivity {
             String paid = isPaid.isChecked() ? "1" : "0";
             String comment = commentText.getText().toString();
             String sum_result = sum.getText().toString().substring(0, sum.length() - 4);
+            String tariff = String.valueOf(tariff_id);
 
-            Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, sum_result, comment);
+            Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, sum_result, tariff, comment);
 
             if (!Objects.requireNonNull(newEntries.get("current")).isEmpty()) {
                 AddData(newEntries);

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "e6.db";
+    public static final String DATABASE_NAME = "e7.db";
 
     public static final String TABLE_RECORDS = "records";
     public static final String RECORDS_ID = "_id";
@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RECORDS_CURRENT = "current";
     public static final String RECORDS_PAID = "paid";
     public static final String RECORDS_SUM = "sum";
+    public static final String RECORDS_TARIFF_ID = "tariff_id";
     public static final String RECORDS_COMMENT = "comment";
 
     public static final String TABLE_TARIFFS = "tariffs";
@@ -46,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " current INTEGER NOT NULL," +
                 " paid INTEGER NOT NULL," +
                 " sum REAL NOT NULL," +
+                " tariff_id INTEGER," +
                 " comment TEXT," +
                 "UNIQUE(date, service))";
 
@@ -82,6 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RECORDS_CURRENT, Integer.parseInt(Objects.requireNonNull(values.get("current"))));
         contentValues.put(RECORDS_PAID, Integer.parseInt(Objects.requireNonNull(values.get("paid"))));
         contentValues.put(RECORDS_SUM, Float.parseFloat(Objects.requireNonNull(values.get("sum"))));
+        contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
 
         long result = db.insertOrThrow(TABLE_RECORDS, null, contentValues);
@@ -97,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
         contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
         contentValues.put(RECORDS_SUM, Float.parseFloat(Objects.requireNonNull(values.get("sum"))));
+        contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
 
         long result = db.update(TABLE_RECORDS, contentValues, "_id = ?",
