@@ -1,21 +1,20 @@
 package com.example.ekomunalka.ui.settings;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -27,9 +26,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.ekomunalka.DatabaseHelper;
 import com.example.ekomunalka.MainActivity;
-import com.example.ekomunalka.NotificationActivity;
 import com.example.ekomunalka.R;
-import com.example.ekomunalka.TariffActivity;
 import com.example.ekomunalka.TariffsActivity;
 import com.example.ekomunalka.databinding.FragmentSettingsBinding;
 
@@ -45,6 +42,8 @@ public class SettingsFragment extends Fragment {
     private MainActivity mainActivity;
     private ListView info;
     private ListView settings;
+    private TextView infoTitle;
+    private TextView settingsTitle;
     private SimpleAdapter infoAdapter;
     private SimpleAdapter settingsAdapter;
 
@@ -88,6 +87,8 @@ public class SettingsFragment extends Fragment {
 
         info = view.findViewById(R.id.informationList);
         settings = view.findViewById(R.id.settingsList);
+        infoTitle = view.findViewById(R.id.infoListTitle);
+        settingsTitle = view.findViewById(R.id.settingsListTitle);
 
         List<Map<String, String>> infoList = new ArrayList<>();
         List<Map<String, String>> settingsList = new ArrayList<>();
@@ -108,20 +109,23 @@ public class SettingsFragment extends Fragment {
         infoAdapter = new SimpleAdapter(
                 getActivity(),
                 infoList,
-                R.layout.mylist1,
+                R.layout.simple_list,
                 new String[] { "title", "subtitle" },
                 new int[] { R.id.title, R.id.subtitle }
         );
         settingsAdapter = new SimpleAdapter(
                 getActivity(),
                 settingsList,
-                R.layout.mylist1,
+                R.layout.simple_list,
                 new String[] { "title", "subtitle" },
                 new int[] { R.id.title, R.id.subtitle }
         );
 
+
         info.setAdapter(infoAdapter);
+        setListViewHeightBasedOnChildren(info);
         settings.setAdapter(settingsAdapter);
+        setListViewHeightBasedOnChildren(settings);
 
         settings.setOnItemClickListener((parent, view1, position, id) -> {
             switch (position) {
@@ -177,5 +181,25 @@ public class SettingsFragment extends Fragment {
     public void clearData() {
         db.clearData();
         mainActivity.Toast(getActivity(), "Дані очищено!", true);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+
+        int totalHeight = listView.getPaddingTop() + listView.getPaddingBottom();
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            if (listItem instanceof ViewGroup)
+                listItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 }

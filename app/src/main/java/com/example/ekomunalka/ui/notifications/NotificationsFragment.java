@@ -1,21 +1,12 @@
 package com.example.ekomunalka.ui.notifications;
 
 import android.app.Activity;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.database.MergeCursor;
-import android.os.Build;
 import android.os.Bundle;
-import android.service.controls.actions.FloatAction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -23,8 +14,6 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.ekomunalka.DatabaseHelper;
@@ -98,7 +87,7 @@ public class NotificationsFragment extends Fragment {
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 getActivity(),
-                R.layout.mylist1,
+                R.layout.simple_list,
                 data,
                 new String[] { "title", "day" },
                 new int[] { R.id.title, R.id.subtitle },

@@ -3,27 +3,16 @@ package com.example.ekomunalka;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.database.MergeCursor;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
-import java.util.Locale;
 
 public class TariffsActivity extends AppCompatActivity {
 
@@ -76,7 +65,7 @@ public class TariffsActivity extends AppCompatActivity {
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 this,
-                R.layout.mylist1,
+                R.layout.simple_list,
                 data,
                 new String[] { "name", "comment" },
                 new int[] { R.id.title, R.id.subtitle },

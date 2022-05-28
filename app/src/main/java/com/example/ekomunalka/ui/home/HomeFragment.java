@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment {
 
         adapter = new SimpleCursorAdapter(
                 getActivity(),
-                R.layout.mylist,
+                R.layout.main_list,
                 data,
                 new String[] { "service", "paid", "sum", "service", "date" },
                 new int[] { R.id.title, R.id.subtitle, R.id.resultSum, R.id.icon, R.id.date },
