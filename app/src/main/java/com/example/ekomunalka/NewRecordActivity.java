@@ -191,7 +191,7 @@ public class NewRecordActivity extends AppCompatActivity {
 
             Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, sum_result, tariff, comment);
 
-            if (!Objects.requireNonNull(newEntries.get("current")).isEmpty()) {
+            if (!Objects.requireNonNull(newEntries.get("current")).isEmpty() && sumCalculate()) {
                 AddData(newEntries);
             } else {
                 mainActivity.Toast(this, "Введіть значення!", false);
@@ -262,7 +262,7 @@ public class NewRecordActivity extends AppCompatActivity {
         return result;
     }
 
-    public void sumCalculate() {
+    public boolean sumCalculate() {
         String service = chooseService.getSelectedItem().toString();
         String tariff = chooseTariff.getSelectedItem().toString();
         String date = chooseMonth.getSelectedItem().toString();
@@ -272,7 +272,9 @@ public class NewRecordActivity extends AppCompatActivity {
 
         if (service.equals("Оберіть сервіс:") ||
                 tariff.equals("Оберіть тариф:") ||
-                date.equals("Оберіть місяць:")) return;
+                date.equals("Оберіть місяць:")) return false;
+
+        if (previousReadings.getText().toString().isEmpty()) return false;
 
         price = db.getTariffPrice(tariff);
 
@@ -281,8 +283,9 @@ public class NewRecordActivity extends AppCompatActivity {
             current = Integer.parseInt(currentReadings.getText().toString());
         } catch (NumberFormatException e) {
             sum.setText(getString(R.string.sum_value, 0.f));
-            return;
+            return true;
         }
         sum.setText(getString(R.string.sum_value, (current - previous) * price));
+        return true;
     }
 }
