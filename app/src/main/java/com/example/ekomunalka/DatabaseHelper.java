@@ -5,12 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -21,61 +16,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "ekomunalka_db.db";
 
     public static final String TABLE_RECORDS = "records";
-    public static final String RECORDS_ID = "_id";
-    public static final String RECORDS_DATE = "date";
-    public static final String RECORDS_SERVICE = "service";
-    public static final String RECORDS_CURRENT = "current";
-    public static final String RECORDS_PAID = "paid";
-    public static final String RECORDS_TRANSPORTATION_FEE = "transportationFee";
-    public static final String RECORDS_SUM = "sum";
-    public static final String RECORDS_TARIFF_ID = "tariff_id";
-    public static final String RECORDS_COMMENT = "comment";
+    public static final String ID_RECORDS = "_id";
+    public static final String DATE_RECORDS = "date";
+    public static final String SERVICE_RECORDS = "service";
+    public static final String CURRENT_RECORDS = "current";
+    public static final String PAID_RECORDS = "paid";
+    public static final String TRANSPORTATION_FEE_RECORDS = "transportationFee";
+    public static final String SUM_RECORDS = "sum";
+    public static final String TARIFF_ID_RECORDS = "tariff_id";
+    public static final String COMMENT_RECORDS = "comment";
 
     public static final String TABLE_TARIFFS = "tariffs";
-    public static final String TARIFFS_ID = "_id";
-    public static final String TARIFFS_NAME = "name";
-    public static final String TARIFFS_PRICE = "price";
-    public static final String TARIFFS_COMMENT = "comment";
+    public static final String ID_TARIFFS = "_id";
+    public static final String NAME_TARIFFS = "name";
+    public static final String PRICE_TARIFFS = "price";
+    public static final String COMMENT_TARIFFS = "comment";
 
     public static final String TABLE_NOTIFICATIONS = "notifications";
-    public static final String NOTIFICATIONS_ID = "_id";
-    public static final String NOTIFICATIONS_TITLE = "title";
-    public static final String NOTIFICATIONS_SUBTITLE = "subtitle";
-    public static final String NOTIFICATIONS_DAY = "day";
+    public static final String ID_NOTIFICATIONS = "_id";
+    public static final String TITLE_NOTIFICATIONS = "title";
+    public static final String SUBTITLE_NOTIFICATIONS = "subtitle";
+    public static final String DAY_NOTIFICATIONS = "day";
 
-    private Context context;
-
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
-        this.context = context;
-    }
+    public DatabaseHelper(Context context) { super(context, DATABASE_NAME, null, 1); }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createRecordsTable = "CREATE TABLE " + TABLE_RECORDS +
-                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " date TEXT NOT NULL," +
-                " service TEXT NOT NULL," +
-                " current INTEGER NOT NULL," +
-                " paid INTEGER NOT NULL," +
-                " transportationFee REAL," +
-                " sum REAL NOT NULL," +
-                " tariff_id INTEGER," +
-                " comment TEXT," +
-                "UNIQUE(date, service))";
+                " (" + ID_RECORDS + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DATE_RECORDS + "  TEXT NOT NULL," +
+                SERVICE_RECORDS + " TEXT NOT NULL," +
+                CURRENT_RECORDS + " INTEGER NOT NULL," +
+                PAID_RECORDS + " INTEGER NOT NULL," +
+                TRANSPORTATION_FEE_RECORDS + " REAL," +
+                SUM_RECORDS + " REAL NOT NULL," +
+                TARIFF_ID_RECORDS + " INTEGER," +
+                COMMENT_RECORDS + " TEXT," +
+                "UNIQUE(" + DATE_RECORDS + ", " + SERVICE_RECORDS + "))";
 
         String createTariffsTable = "CREATE TABLE " + TABLE_TARIFFS +
-                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " name TEXT NOT NULL," +
-                " price REAL NOT NULL," +
-                " comment TEXT," +
-                "UNIQUE(name))";
+                " (" + ID_TARIFFS + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                NAME_TARIFFS + " TEXT NOT NULL," +
+                PRICE_TARIFFS + " REAL NOT NULL," +
+                COMMENT_TARIFFS + " TEXT," +
+                "UNIQUE(" + NAME_TARIFFS +"))";
 
         String createNotificationsTable = "CREATE TABLE " + TABLE_NOTIFICATIONS +
-                " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " title TEXT NOT NULL," +
-                " subtitle TEXT NOT NULL," +
-                " day INTEGER NOT NULL)";
+                " (" + ID_NOTIFICATIONS + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TITLE_NOTIFICATIONS + " TEXT NOT NULL," +
+                SUBTITLE_NOTIFICATIONS + " TEXT NOT NULL," +
+                DAY_NOTIFICATIONS + " INTEGER NOT NULL)";
 
         db.execSQL(createRecordsTable);
         db.execSQL(createTariffsTable);
@@ -90,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addRecord(Map<String, String> values) throws ParseException {
+    public void addRecord(Map<String, String> values) throws ParseException {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         DecimalFormat format = new DecimalFormat("0.#");
@@ -98,22 +88,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(RECORDS_DATE, values.get("date"));
-        contentValues.put(RECORDS_SERVICE, values.get("service"));
-        contentValues.put(RECORDS_CURRENT, Integer.parseInt(Objects.requireNonNull(values.get("current"))));
-        contentValues.put(RECORDS_PAID, Integer.parseInt(Objects.requireNonNull(values.get("paid"))));
-        if (!values.get("transportationFee").isEmpty())
-            contentValues.put(RECORDS_TRANSPORTATION_FEE, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("transportationFee")))).floatValue());
-        contentValues.put(RECORDS_SUM, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("sum")))).floatValue());
-        contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
-        contentValues.put(RECORDS_COMMENT, values.get("comment"));
+        contentValues.put(DATE_RECORDS, values.get(DATE_RECORDS));
+        contentValues.put(SERVICE_RECORDS, values.get(SERVICE_RECORDS));
+        contentValues.put(CURRENT_RECORDS, Integer.parseInt(Objects.requireNonNull(values.get(CURRENT_RECORDS))));
+        contentValues.put(PAID_RECORDS, Integer.parseInt(Objects.requireNonNull(values.get(PAID_RECORDS))));
+        if (!Objects.requireNonNull(values.get(TRANSPORTATION_FEE_RECORDS)).isEmpty())
+            contentValues.put(TRANSPORTATION_FEE_RECORDS, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get(TRANSPORTATION_FEE_RECORDS)))).floatValue());
+        contentValues.put(SUM_RECORDS, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get(SUM_RECORDS)))).floatValue());
+        contentValues.put(TARIFF_ID_RECORDS, Integer.parseInt(Objects.requireNonNull(values.get(TARIFF_ID_RECORDS))));
+        contentValues.put(COMMENT_RECORDS, values.get(COMMENT_RECORDS));
 
-        long result = db.insertOrThrow(TABLE_RECORDS, null, contentValues);
-
-        return result != -1;
+        db.insertOrThrow(TABLE_RECORDS, null, contentValues);
     }
 
-    public boolean updateRecord(Map<String, String> values, int id) throws ParseException {
+    public void updateRecord(Map<String, String> values, int id) throws ParseException {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         DecimalFormat format = new DecimalFormat("0.#");
@@ -121,62 +109,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(RECORDS_DATE, values.get("date"));
-        contentValues.put(RECORDS_SERVICE, values.get("service"));
-        contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
-        contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
-        if (!values.get("transportationFee").isEmpty())
-            contentValues.put(RECORDS_TRANSPORTATION_FEE, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("transportationFee")))).floatValue());
-        contentValues.put(RECORDS_SUM, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("sum")))).floatValue());
-        contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
-        contentValues.put(RECORDS_COMMENT, values.get("comment"));
+        contentValues.put(DATE_RECORDS, values.get(DATE_RECORDS));
+        contentValues.put(SERVICE_RECORDS, values.get(SERVICE_RECORDS));
+        contentValues.put(CURRENT_RECORDS, Integer.parseInt(Objects.requireNonNull(values.get(CURRENT_RECORDS))));
+        contentValues.put(PAID_RECORDS, Integer.parseInt(Objects.requireNonNull(values.get(PAID_RECORDS))));
+        if (!Objects.requireNonNull(values.get(TRANSPORTATION_FEE_RECORDS)).isEmpty())
+            contentValues.put(TRANSPORTATION_FEE_RECORDS, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get(TRANSPORTATION_FEE_RECORDS)))).floatValue());
+        contentValues.put(SUM_RECORDS, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get(SUM_RECORDS)))).floatValue());
+        contentValues.put(TARIFF_ID_RECORDS, Integer.parseInt(Objects.requireNonNull(values.get(TARIFF_ID_RECORDS))));
+        contentValues.put(COMMENT_RECORDS, values.get(COMMENT_RECORDS));
 
-        long result = db.update(TABLE_RECORDS, contentValues, "_id = ?",
-                new String[]{String.valueOf(id)});
-
-        return result != -1;
+        db.update(TABLE_RECORDS, contentValues, ID_RECORDS + " = ?", new String[]{ String.valueOf(id) });
     }
 
     public Cursor getRecords() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS + " ORDER BY date DESC", null);
+        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS + " ORDER BY " + DATE_RECORDS + " DESC", null);
     }
 
     public Cursor getRecord(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS + " WHERE _id = " + id,
+        return db.rawQuery("SELECT * FROM " + TABLE_RECORDS + " WHERE " + ID_RECORDS + " = " + id,
                 null);
     }
 
     public int getRecordPrevious(String service, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor result = db.rawQuery("SELECT current FROM " + TABLE_RECORDS + " WHERE service = '" +
-                        service + "' AND date = '" + date + "'",
+        Cursor result = db.rawQuery("SELECT " + CURRENT_RECORDS + " FROM " + TABLE_RECORDS + " WHERE " + SERVICE_RECORDS + " = '" +
+                        service + "' AND " + DATE_RECORDS + " = '" + date + "'",
                 null);
         result.moveToNext();
-
-        if (result.getCount() == 0) {
-            return 0;
-        }
-
-        return Integer.parseInt(result.getString(0));
+        int id = (result.getCount() != 0) ? Integer.parseInt(result.getString(0)) : 0;
+        result.close();
+        return id;
     }
 
     public boolean deleteRecord(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_RECORDS, RECORDS_ID + "=" + id, null) > 0;
+        return db.delete(TABLE_RECORDS, ID_RECORDS + "=" + id, null) > 0;
     }
 
-    public boolean addTariff(Map<String, String> values) {
+    public void addTariff(Map<String, String> values) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TARIFFS_NAME, values.get("name"));
-        contentValues.put(TARIFFS_PRICE, Float.valueOf(Objects.requireNonNull(values.get("price"))));
-        contentValues.put(TARIFFS_COMMENT, values.get("comment"));
+        contentValues.put(NAME_TARIFFS, values.get(NAME_TARIFFS));
+        contentValues.put(PRICE_TARIFFS, Float.valueOf(Objects.requireNonNull(values.get(PRICE_TARIFFS))));
+        contentValues.put(COMMENT_TARIFFS, values.get(COMMENT_TARIFFS));
 
-        long result = db.insertOrThrow(TABLE_TARIFFS, null, contentValues);
-
-        return result != -1;
+        db.insertOrThrow(TABLE_TARIFFS, null, contentValues);
     }
 
     public Cursor getTariffs() {
@@ -186,26 +166,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public float getTariffPrice(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor result = db.rawQuery("SELECT price FROM " + TABLE_TARIFFS + " WHERE name = '" +
-                        name + "'",
+        Cursor result = db.rawQuery("SELECT " + PRICE_TARIFFS + " FROM " + TABLE_TARIFFS +
+                        " WHERE " + NAME_TARIFFS + " = '" + name + "'",
                 null);
         result.moveToNext();
-        return Float.parseFloat(result.getString(0));
+        float price = Float.parseFloat(result.getString(0));
+        result.close();
+        return price;
     }
 
     public boolean deleteTariff(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_TARIFFS, TARIFFS_ID + "=" + id, null) > 0;
+        return db.delete(TABLE_TARIFFS, ID_TARIFFS + "=" + id, null) > 0;
     }
 
     public boolean updateTariff(Map<String, String> values, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(TARIFFS_NAME, values.get("name"));
-        contentValues.put(TARIFFS_PRICE, Float.parseFloat(Objects.requireNonNull(values.get("price"))));
-        contentValues.put(TARIFFS_COMMENT, values.get("comment"));
+        contentValues.put(NAME_TARIFFS, values.get(NAME_TARIFFS));
+        contentValues.put(PRICE_TARIFFS, Float.parseFloat(Objects.requireNonNull(values.get(PRICE_TARIFFS))));
+        contentValues.put(COMMENT_TARIFFS, values.get(COMMENT_TARIFFS));
 
-        long result = db.update(TABLE_TARIFFS, contentValues, "_id = ?",
+        long result = db.update(TABLE_TARIFFS, contentValues, ID_TARIFFS + " = ?",
                 new String[]{String.valueOf(id)});
 
         return result != -1;
@@ -213,7 +195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getTariff(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_TARIFFS + " WHERE _id = " + id,
+        return db.rawQuery("SELECT * FROM " + TABLE_TARIFFS + " WHERE " + ID_TARIFFS + " = " + id,
                 null);
     }
 
@@ -227,9 +209,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int addNotification(Map<String, String> values) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(NOTIFICATIONS_TITLE, values.get("title"));
-        contentValues.put(NOTIFICATIONS_SUBTITLE, values.get("subtitle"));
-        contentValues.put(NOTIFICATIONS_DAY, Integer.parseInt(Objects.requireNonNull(values.get("day"))));
+        contentValues.put(TITLE_NOTIFICATIONS, values.get(TITLE_NOTIFICATIONS));
+        contentValues.put(SUBTITLE_NOTIFICATIONS, values.get(SUBTITLE_NOTIFICATIONS));
+        contentValues.put(DAY_NOTIFICATIONS, Integer.parseInt(Objects.requireNonNull(values.get(DAY_NOTIFICATIONS))));
 
         long result = db.insertOrThrow(TABLE_NOTIFICATIONS, null, contentValues);
         return (int) result;
@@ -242,18 +224,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getNotification(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NOTIFICATIONS + " WHERE _id = " + id,
+        return db.rawQuery("SELECT * FROM " + TABLE_NOTIFICATIONS + " WHERE " + ID_NOTIFICATIONS + " = " + id,
                 null);
     }
 
     public boolean updateNotification(Map<String, String> values, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(NOTIFICATIONS_TITLE, values.get("title"));
-        contentValues.put(NOTIFICATIONS_SUBTITLE, values.get("subtitle"));
-        contentValues.put(NOTIFICATIONS_DAY, Integer.parseInt(Objects.requireNonNull(values.get("day"))));
+        contentValues.put(TITLE_NOTIFICATIONS, values.get(TITLE_NOTIFICATIONS));
+        contentValues.put(SUBTITLE_NOTIFICATIONS, values.get(SUBTITLE_NOTIFICATIONS));
+        contentValues.put(DAY_NOTIFICATIONS, Integer.parseInt(Objects.requireNonNull(values.get(DAY_NOTIFICATIONS))));
 
-        long result = db.update(TABLE_NOTIFICATIONS, contentValues, "_id = ?",
+        long result = db.update(TABLE_NOTIFICATIONS, contentValues, ID_NOTIFICATIONS + " = ?",
                 new String[]{String.valueOf(id)});
 
         return result != -1;
@@ -261,71 +243,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean deleteNotification(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NOTIFICATIONS, NOTIFICATIONS_ID + "=" + id, null) > 0;
+        return db.delete(TABLE_NOTIFICATIONS, ID_NOTIFICATIONS + "=" + id, null) > 0;
     }
-
-    /*public void backup(String outFileName) {
-
-        //database path
-        final String inFileName = context.getDatabasePath(DATABASE_NAME).toString();
-
-        try {
-
-            File dbFile = new File(inFileName);
-            FileInputStream fis = new FileInputStream(dbFile);
-
-            // Open the empty db as the output stream
-            OutputStream output = new FileOutputStream(outFileName);
-
-            // Transfer bytes from the input file to the output file
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fis.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-
-            // Close the streams
-            output.flush();
-            output.close();
-            fis.close();
-
-            Toast.makeText(context, "Backup Completed", Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            Toast.makeText(context, "Unable to backup database. Retry", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
-
-    public void restore(String inFileName) {
-
-        final String outFileName = context.getDatabasePath(DATABASE_NAME).toString();
-
-        try {
-
-            File dbFile = new File(inFileName);
-            FileInputStream fis = new FileInputStream(dbFile);
-
-            // Open the empty db as the output stream
-            OutputStream output = new FileOutputStream(outFileName);
-
-            // Transfer bytes from the input file to the output file
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fis.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-
-            // Close the streams
-            output.flush();
-            output.close();
-            fis.close();
-
-            Toast.makeText(context, "Import Completed", Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            Toast.makeText(context, "Unable to import database. Retry", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }*/
 }
