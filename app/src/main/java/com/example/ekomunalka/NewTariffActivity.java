@@ -41,14 +41,14 @@ public class NewTariffActivity extends AppCompatActivity {
             values.put("comment", comment);
 
             if (!name.isEmpty() && !price.isEmpty()) {
-                AddData(values);
+                addData(values);
             } else {
                 mainActivity.toast(NewTariffActivity.this, "Введіть значення!", false);
             }
         });
     }
 
-    public void AddData(Map<String, String> values) {
+    public void addData(Map<String, String> values) {
         try {
             db.addTariff(values);
         }
