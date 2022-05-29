@@ -92,6 +92,7 @@ public class NewRecordActivity extends AppCompatActivity {
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
         tariff_id = -1;
+        sum.setText(getString(R.string.sum_value, 0.f));
 
         readingsValidate();
 

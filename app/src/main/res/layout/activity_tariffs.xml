@@ -25,6 +25,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
+        android:contentDescription="@string/add_new_tariff_desc"
         app:backgroundTint="@color/ukraine_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -7,7 +7,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".NewRecordActivity">
 
         <EditText
@@ -19,6 +19,7 @@
             android:layout_marginEnd="24dp"
             android:ems="10"
             android:hint="@string/record_current"
+            android:autofillHints="@string/record_current"
             android:inputType="number"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,6 +36,7 @@
             android:layout_marginEnd="24dp"
             android:ems="10"
             android:hint="@string/for_transportation"
+            android:autofillHints="@string/for_transportation"
             android:inputType="numberDecimal"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -51,6 +53,7 @@
             android:layout_marginEnd="24dp"
             android:ems="10"
             android:hint="@string/record_previous"
+            android:autofillHints="@string/record_previous"
             android:inputType="number"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -117,6 +120,7 @@
             android:layout_marginEnd="24dp"
             android:ems="10"
             android:hint="@string/comment"
+            android:autofillHints="@string/comment"
             android:inputType="text"
             android:maxLength="100"
             android:maxLines="1"
@@ -151,7 +155,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
-            android:text="0 грн"
             app:layout_constraintStart_toEndOf="@+id/textView"
             app:layout_constraintTop_toBottomOf="@+id/comment" />
 

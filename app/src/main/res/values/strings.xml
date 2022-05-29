@@ -17,6 +17,7 @@
     <string name="electricity">Електроенергія</string>
     <string name="add_new_record_desc">Додати новий запис</string>
     <string name="add_new_notification_desc">Додати нове нагадування</string>
+    <string name="add_new_tariff_desc">Додати новий тариф</string>
     <string name="sum">Сума:</string>
     <string name="sum_value">%.2f грн</string>
     <string name="name">Назва</string>
