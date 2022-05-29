@@ -67,7 +67,7 @@ public class TariffsActivity extends AppCompatActivity {
                 this,
                 R.layout.simple_list,
                 data,
-                new String[] { "name", "comment" },
+                new String[] { "name", "price" },
                 new int[] { R.id.title, R.id.subtitle },
                 0
         );
