@@ -10,8 +10,12 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+
+import org.w3c.dom.Text;
 
 import java.time.YearMonth;
 import java.util.Calendar;
@@ -23,6 +27,7 @@ public class NewNotificationActivity extends AppCompatActivity {
 
     private DatabaseHelper db;
     private MainActivity mainActivity;
+    private NotificationActivity notificationActivity;
     private EditText title;
     private EditText subtitle;
     private EditText day;
@@ -35,11 +40,40 @@ public class NewNotificationActivity extends AppCompatActivity {
 
         db = new DatabaseHelper(this);
         mainActivity = new MainActivity();
+        notificationActivity = new NotificationActivity();
 
         title = findViewById(R.id.titleNotification);
         subtitle = findViewById(R.id.subtitleNotification);
         day = findViewById(R.id.dayNotification);
         save = findViewById(R.id.saveNotification);
+
+        day.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String dayStr = day.getText().toString();
+
+                if (dayStr.isEmpty()) {
+                    return;
+                }
+
+                int value = Integer.parseInt(dayStr);
+
+                if (value < 1 || value > 31) {
+                    mainActivity.Toast(getApplicationContext(), "День може бути від 1 до 31", true);
+                    day.setText(value < 1 ? "1" : "31");
+                }
+            }
+        });
 
         save.setOnClickListener(v -> {
             String titleStr = title.getText().toString();

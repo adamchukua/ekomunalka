@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -46,6 +48,34 @@ public class NotificationActivity extends AppCompatActivity {
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         getNotification();
+
+        day.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String dayStr = day.getText().toString();
+
+                if (dayStr.isEmpty()) {
+                    return;
+                }
+
+                int value = Integer.parseInt(dayStr);
+
+                if (value < 1 || value > 31) {
+                    mainActivity.Toast(getApplicationContext(), "День може бути від 1 до 31", true);
+                    day.setText(value < 1 ? "1" : "31");
+                }
+            }
+        });
 
         save.setOnClickListener(v -> {
             String titleStr = title.getText().toString();
