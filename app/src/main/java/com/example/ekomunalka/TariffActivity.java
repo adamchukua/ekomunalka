@@ -54,7 +54,7 @@ public class TariffActivity extends AppCompatActivity {
             if (!nameStr.isEmpty() && !priceStr.isEmpty()) {
                 updateTariff(values);
             } else {
-                mainActivity.Toast(this, "Введіть значення!", false);
+                mainActivity.toast(this, "Введіть значення!", false);
             }
         });
     }
@@ -84,13 +84,13 @@ public class TariffActivity extends AppCompatActivity {
 
     public void deleteTariff() {
         if (db.deleteTariff(id)) {
-            mainActivity.Toast(this, "Нагадування видалено!", false);
+            mainActivity.toast(this, "Нагадування видалено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
             setResult(RESULT_OK, intent);
             TariffActivity.super.onBackPressed();
         } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
         }
     }
 
@@ -98,13 +98,13 @@ public class TariffActivity extends AppCompatActivity {
         boolean insertData = db.updateTariff(newValues, id);
 
         if (insertData) {
-            mainActivity.Toast(this, "Дані оновлено!", false);
+            mainActivity.toast(this, "Дані оновлено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
             setResult(RESULT_OK, intent);
             TariffActivity.super.onBackPressed();
         } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
         }
     }
 

@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         com.example.ekomunalka.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_notifications, R.id.navigation_settings)
                 .build();
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
-    public void Toast(android.content.Context context, String text, boolean duration) {
+    public void toast(android.content.Context context, String text, boolean duration) {
         Toast.makeText(context, text, duration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
     }
 }

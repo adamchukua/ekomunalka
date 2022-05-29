@@ -2,13 +2,11 @@ package com.example.ekomunalka;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,8 +22,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,14 +155,14 @@ public class RecordActivity extends AppCompatActivity {
 
         currentReadings.setOnClickListener(v -> {
             if (!readingsValidate()) {
-                mainActivity.Toast(RecordActivity.this,
+                mainActivity.toast(RecordActivity.this,
                         "Спочатку оберіть сервіс, тариф та місяць!", true);
             }
         });
 
         previousReadings.setOnClickListener(v -> {
             if (!readingsValidate()) {
-                mainActivity.Toast(RecordActivity.this,
+                mainActivity.toast(RecordActivity.this,
                         "Спочатку оберіть сервіс, тариф та місяць!", true);
             }
         });
@@ -233,9 +229,9 @@ public class RecordActivity extends AppCompatActivity {
                 UpdateData(newValues, id);
             } else {
                 if (Objects.requireNonNull(newValues.get("service")).isEmpty()) {
-                    mainActivity.Toast(this, "Введіть значення!", true);
+                    mainActivity.toast(this, "Введіть значення!", true);
                 } else {
-                    mainActivity.Toast(this, "Дані ті самі!", true);
+                    mainActivity.toast(this, "Дані ті самі!", true);
                 }
             }
         });
@@ -265,13 +261,13 @@ public class RecordActivity extends AppCompatActivity {
 
     public void deleteRecord() {
         if (db.deleteRecord(id)) {
-            mainActivity.Toast(this, "Запис видалено!", false);
+            mainActivity.toast(this, "Запис видалено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
             setResult(RESULT_OK, intent);
             RecordActivity.super.onBackPressed();
         } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
         }
     }
 
@@ -280,11 +276,11 @@ public class RecordActivity extends AppCompatActivity {
             db.updateRecord(newValues, id);
         } catch (ParseException e) {
             e.printStackTrace();
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
             return;
         }
 
-        mainActivity.Toast(this, "Дані оновлено!", false);
+        mainActivity.toast(this, "Дані оновлено!", false);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("result", 1);
         setResult(RESULT_OK, intent);

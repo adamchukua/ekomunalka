@@ -1,6 +1,5 @@
 package com.example.ekomunalka.ui.settings;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
@@ -9,20 +8,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -40,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class SettingsFragment extends Fragment {
 
@@ -208,7 +201,7 @@ public class SettingsFragment extends Fragment {
         }
 
         db.clearData();
-        mainActivity.Toast(getActivity(), "Дані очищено!", true);
+        mainActivity.toast(getActivity(), "Дані очищено!", true);
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {

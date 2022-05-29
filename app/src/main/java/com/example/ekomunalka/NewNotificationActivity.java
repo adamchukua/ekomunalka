@@ -2,22 +2,17 @@ package com.example.ekomunalka;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.w3c.dom.Text;
-
-import java.time.YearMonth;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +64,7 @@ public class NewNotificationActivity extends AppCompatActivity {
                 int value = Integer.parseInt(dayStr);
 
                 if (value < 1 || value > 31) {
-                    mainActivity.Toast(getApplicationContext(), "День може бути від 1 до 31", true);
+                    mainActivity.toast(getApplicationContext(), "День може бути від 1 до 31", true);
                     day.setText(value < 1 ? "1" : "31");
                 }
             }
@@ -89,7 +84,7 @@ public class NewNotificationActivity extends AppCompatActivity {
             if (!titleStr.isEmpty() || !subtitleStr.isEmpty() || !dayStr.isEmpty()) {
                 addNotification(data);
             } else {
-                mainActivity.Toast(this, "Заповніть всі поля!", true);
+                mainActivity.toast(this, "Заповніть всі поля!", true);
             }
         });
     }
@@ -99,14 +94,14 @@ public class NewNotificationActivity extends AppCompatActivity {
 
         if (id != -1) {
             createNotification(data, id);
-            mainActivity.Toast(this, "Нагадування створено!", false);
+            mainActivity.toast(this, "Нагадування створено!", false);
             Intent mainActivity = new Intent(this, MainActivity.class);
             mainActivity.putExtra("result", 1);
             setResult(RESULT_OK, mainActivity);
 
             NewNotificationActivity.super.onBackPressed();
         } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
         }
     }
 

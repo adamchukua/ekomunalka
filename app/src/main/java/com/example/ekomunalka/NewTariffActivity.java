@@ -43,7 +43,7 @@ public class NewTariffActivity extends AppCompatActivity {
             if (!name.isEmpty() && !price.isEmpty()) {
                 AddData(values);
             } else {
-                mainActivity.Toast(NewTariffActivity.this, "Введіть значення!", false);
+                mainActivity.toast(NewTariffActivity.this, "Введіть значення!", false);
             }
         });
     }
@@ -53,18 +53,18 @@ public class NewTariffActivity extends AppCompatActivity {
             db.addTariff(values);
         }
         catch (SQLiteConstraintException e) {
-            mainActivity.Toast(this,
+            mainActivity.toast(this,
                     "Тариф \"" + values.get("name") + "\" вже існує", true);
 
             return;
         }
         catch (Exception e) {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
 
             return;
         }
 
-        mainActivity.Toast(this, "Дані додані!", false);
+        mainActivity.toast(this, "Дані додані!", false);
         Intent intent = new Intent(this, NewRecordActivity.class);
         intent.putExtra("result", 1);
         setResult(RESULT_OK, intent);

@@ -71,7 +71,7 @@ public class NotificationActivity extends AppCompatActivity {
                 int value = Integer.parseInt(dayStr);
 
                 if (value < 1 || value > 31) {
-                    mainActivity.Toast(getApplicationContext(), "День може бути від 1 до 31", true);
+                    mainActivity.toast(getApplicationContext(), "День може бути від 1 до 31", true);
                     day.setText(value < 1 ? "1" : "31");
                 }
             }
@@ -91,7 +91,7 @@ public class NotificationActivity extends AppCompatActivity {
             if (!titleStr.isEmpty() || !subtitleStr.isEmpty() || !dayStr.isEmpty()) {
                 updateNotification(data);
             } else {
-                mainActivity.Toast(this, "Заповніть всі поля!", true);
+                mainActivity.toast(this, "Заповніть всі поля!", true);
             }
         });
     }
@@ -122,13 +122,13 @@ public class NotificationActivity extends AppCompatActivity {
     public void deleteNotification() {
         if (db.deleteNotification(id)) {
             cancelNotification(this, id);
-            mainActivity.Toast(this, "Нагадування видалено!", false);
+            mainActivity.toast(this, "Нагадування видалено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
             setResult(RESULT_OK, intent);
             NotificationActivity.super.onBackPressed();
         } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
         }
     }
 
@@ -151,13 +151,13 @@ public class NotificationActivity extends AppCompatActivity {
     public void updateNotification(Map<String, String> newValues) {
         if (db.updateNotification(newValues, id)) {
             createNotification(newValues, id);
-            mainActivity.Toast(this, "Дані оновлено!", false);
+            mainActivity.toast(this, "Дані оновлено!", false);
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("result", 1);
             setResult(RESULT_OK, intent);
             NotificationActivity.super.onBackPressed();
         } else {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
         }
     }
 

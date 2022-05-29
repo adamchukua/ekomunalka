@@ -140,14 +140,14 @@ public class NewRecordActivity extends AppCompatActivity {
 
         currentReadings.setOnClickListener(v -> {
             if (!readingsValidate()) {
-                mainActivity.Toast(NewRecordActivity.this,
+                mainActivity.toast(NewRecordActivity.this,
                         "Спочатку оберіть сервіс, тариф та місяць!", true);
             }
         });
 
         previousReadings.setOnClickListener(v -> {
             if (!readingsValidate()) {
-                mainActivity.Toast(NewRecordActivity.this,
+                mainActivity.toast(NewRecordActivity.this,
                         "Спочатку оберіть сервіс, тариф та місяць!", true);
             }
         });
@@ -213,7 +213,7 @@ public class NewRecordActivity extends AppCompatActivity {
             if (!Objects.requireNonNull(newEntries.get("current")).isEmpty() && sumCalculate()) {
                 AddData(newEntries);
             } else {
-                mainActivity.Toast(this, "Введіть значення!", false);
+                mainActivity.toast(this, "Введіть значення!", false);
             }
         });
     }
@@ -222,18 +222,18 @@ public class NewRecordActivity extends AppCompatActivity {
         try {
             db.addRecord(newEntries);
         } catch (SQLiteConstraintException e) {
-            mainActivity.Toast(this,
+            mainActivity.toast(this,
                     "Сервіс \"" + newEntries.get("service") + "\" вже записаний в цьому місяці", true);
 
             return;
         } catch (Exception e) {
-            mainActivity.Toast(this, "Щось пішло не так...", true);
+            mainActivity.toast(this, "Щось пішло не так...", true);
             Log.d("addDataError", e.getMessage());
 
             return;
         }
 
-        mainActivity.Toast(this, "Дані додані!", false);
+        mainActivity.toast(this, "Дані додані!", false);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("result", 1);
         setResult(RESULT_OK, intent);
