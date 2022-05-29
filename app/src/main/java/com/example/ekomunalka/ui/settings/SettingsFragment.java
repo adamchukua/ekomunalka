@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,19 +48,23 @@ public class SettingsFragment extends Fragment {
     private SimpleAdapter infoAdapter;
     private SimpleAdapter settingsAdapter;
 
-    ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
+    /*ActivityResultLauncher<Intent> backupLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-
-                    /*if (data != null) {
-                        if (data.getIntExtra("result", -1) == 1) {
-                            RefreshListOfRecords();
-                        }
-                    }*/
+                    assert result.getData() != null;
+                    db.backup(result.getData().toUri(0));
                 }
-            });
+            });*/
+
+    /*ActivityResultLauncher<Intent> restoreLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    assert result.getData() != null;
+                    db.restore(result.getData().toUri(0));
+                }
+            });*/
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -78,8 +83,8 @@ public class SettingsFragment extends Fragment {
         String[][] settingsItems =
                 {{"Тарифи", "Додати, змінити чи видалити тарифи"},
                 {"Скинути дані", "Всі записи, тарифи та нагадування будуть видалені"},
-                {"Створити бекап", "Всі записи та тарифи будуть збережені у файлі, який ви зможете зберігати на будь-якому сховищі"},
-                {"Відновити бекап", "Всі записи та тарифи будуть відновлені з файлу"},
+                //{"Створити бекап", "Всі записи та тарифи будуть збережені у файлі, який ви зможете зберігати на будь-якому сховищі"},
+                //{"Відновити бекап", "Всі записи та тарифи будуть відновлені з файлу"},
                 {"Тестове повідомлення", "Отримати тестове повідомлення, аби дізнатись чи все працює"}};
 
         db = new DatabaseHelper(getContext());
@@ -131,7 +136,7 @@ public class SettingsFragment extends Fragment {
             switch (position) {
                 case 0:
                     Intent tariffsActivity = new Intent(getActivity(), TariffsActivity.class);
-                    activityLauncher.launch(tariffsActivity);
+                    startActivity(tariffsActivity);
                     break;
                 case 1:
                     new AlertDialog.Builder(getActivity())
@@ -142,14 +147,20 @@ public class SettingsFragment extends Fragment {
                                     clearData())
                             .create().show();
                     break;
+                //case 2:
+                    //Intent backup = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    //backup.addCategory(Intent.CATEGORY_OPENABLE);
+                    //backup.setType("*/*"); //not needed, but maybe usefull
+                    //backup.putExtra(Intent.EXTRA_TITLE,  "FILENAME"); //not needed, but maybe usefull
+                    //backupLauncher.launch(backup);
+                //case 3:
+                    //Intent restore = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    //restore.addCategory(Intent.CATEGORY_OPENABLE);
+                    //restore.setType("*/*"); //not needed, but maybe usefull
+                    //restore.putExtra(Intent.EXTRA_TITLE,  "FILENAME"); //not needed, but maybe usefull
+                    //restoreLauncher.launch(restore);
+                    //break;
                 case 2:
-                case 3:
-                    Intent backup = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    activityLauncher.launch(backup);
-                    // TODO: backup
-                    // TODO: restore
-                    break;
-                case 4:
                     NotificationChannel channel = new NotificationChannel(
                             "Тестове повідомлення",
                             "Тестове повідомлення",
