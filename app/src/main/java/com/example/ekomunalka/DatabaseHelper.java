@@ -11,11 +11,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "e7.db";
+    public static final String DATABASE_NAME = "ekomunalka.db";
 
     public static final String TABLE_RECORDS = "records";
     public static final String RECORDS_ID = "_id";
@@ -84,14 +87,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean addRecord(Map<String, String> values) {
+    public boolean addRecord(Map<String, String> values) throws ParseException {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat format = new DecimalFormat("0.#");
+        format.setDecimalFormatSymbols(symbols);
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(RECORDS_DATE, values.get("date"));
         contentValues.put(RECORDS_SERVICE, values.get("service"));
         contentValues.put(RECORDS_CURRENT, Integer.parseInt(Objects.requireNonNull(values.get("current"))));
         contentValues.put(RECORDS_PAID, Integer.parseInt(Objects.requireNonNull(values.get("paid"))));
-        contentValues.put(RECORDS_SUM, Float.parseFloat(Objects.requireNonNull(values.get("sum"))));
+        contentValues.put(RECORDS_SUM, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("sum")))).floatValue());
         contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
 
@@ -100,14 +108,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public boolean updateRecord(Map<String, String> values, int id) {
+    public boolean updateRecord(Map<String, String> values, int id) throws ParseException {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        DecimalFormat format = new DecimalFormat("0.#");
+        format.setDecimalFormatSymbols(symbols);
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(RECORDS_DATE, values.get("date"));
         contentValues.put(RECORDS_SERVICE, values.get("service"));
         contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
         contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
-        contentValues.put(RECORDS_SUM, Float.parseFloat(Objects.requireNonNull(values.get("sum"))));
+        contentValues.put(RECORDS_SUM, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("sum")))).floatValue());
         contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
 

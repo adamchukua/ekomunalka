@@ -24,6 +24,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -158,12 +161,36 @@ public class RecordActivity extends AppCompatActivity {
             }
         });
 
-        currentReadings.addTextChangedListener(new TextWatcher() {
+        previousReadings.setOnClickListener(v -> {
+            if (!readingsValidate()) {
+                mainActivity.Toast(RecordActivity.this,
+                        "Спочатку оберіть сервіс, тариф та місяць!", true);
+            }
+        });
+
+        previousReadings.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                sumCalculate();
+            }
+        });
+
+        currentReadings.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -178,7 +205,7 @@ public class RecordActivity extends AppCompatActivity {
             String current = currentReadings.getText().toString();
             String paid = isPaid.isChecked() ? "1" : "0";
             String comment = commentText.getText().toString();
-            String sum_result = sum.getText().toString();
+            String sum_result = sum.getText().toString().substring(0, sum.length() - 4);;
             String tariff = String.valueOf(tariff_id);
 
             Map<String, String> newValues = GetDataFromLocal(date, service, current, paid, sum_result, tariff, comment);
@@ -230,17 +257,19 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     public void UpdateData(Map<String, String> newValues, int id) {
-        boolean insertData = db.updateRecord(newValues, id);
-
-        if (insertData) {
-            mainActivity.Toast(this, "Дані оновлено!", false);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("result", 1);
-            setResult(RESULT_OK, intent);
-            RecordActivity.super.onBackPressed();
-        } else {
+        try {
+            db.updateRecord(newValues, id);
+        } catch (ParseException e) {
+            e.printStackTrace();
             mainActivity.Toast(this, "Щось пішло не так...", true);
+            return;
         }
+
+        mainActivity.Toast(this, "Дані оновлено!", false);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("result", 1);
+        setResult(RESULT_OK, intent);
+        RecordActivity.super.onBackPressed();
     }
 
     public Map<String, String> GetDataFromDB() {

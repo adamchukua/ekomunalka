@@ -209,7 +209,6 @@ public class NewRecordActivity extends AppCompatActivity {
             return;
         } catch (Exception e) {
             mainActivity.Toast(this, "Щось пішло не так...", true);
-            Log.d("errorOfAddingRecord", e.getMessage());
 
             return;
         }
