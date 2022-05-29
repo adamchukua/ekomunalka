@@ -1,9 +1,5 @@
 package com.example.ekomunalka;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +17,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -32,16 +32,18 @@ public class NewRecordActivity extends AppCompatActivity {
     DatabaseHelper db;
     MainActivity mainActivity;
     RecordActivity recordActivity;
-    EditText currentReadings;
-    EditText previousReadings;
-    Spinner chooseTariff;
-    Spinner chooseService;
+
     Spinner chooseMonth;
-    CheckBox isPaid;
-    EditText commentText;
+    Spinner chooseService;
+    Spinner chooseTariff;
+    EditText previousReadings;
+    EditText currentReadings;
     EditText transportationFee;
+    EditText commentText;
     TextView sum;
-    Button saveData;
+    CheckBox isPaid;
+    Button save;
+
     String[] tariffs;
     Cursor tariffs_db;
     int tariff_id;
@@ -72,31 +74,34 @@ public class NewRecordActivity extends AppCompatActivity {
         mainActivity = new MainActivity();
         recordActivity = new RecordActivity();
 
-        currentReadings = findViewById(R.id.current);
-        previousReadings = findViewById(R.id.previous);
-        chooseService = findViewById(R.id.chooseService);
-        ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, mainActivity.services);
-        chooseService.setAdapter(servicesAdapter);
-        isPaid = findViewById(R.id.isPaid);
-        saveData = findViewById(R.id.saveRecord);
-        commentText = findViewById(R.id.comment);
         chooseMonth = findViewById(R.id.chooseMonth);
         ArrayAdapter<String> monthsAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, mainActivity.months);
         chooseMonth.setAdapter(monthsAdapter);
         chooseMonth.setSelection(Calendar.getInstance().get(Calendar.MONTH));
-        sum = findViewById(R.id.sum);
-        transportationFee = findViewById(R.id.transportationFee);
+
+        chooseService = findViewById(R.id.chooseService);
+        ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, mainActivity.services);
+        chooseService.setAdapter(servicesAdapter);
+
         chooseTariff = findViewById(R.id.chooseTariff);
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
         tariff_id = -1;
+
+        previousReadings = findViewById(R.id.previous);
+        currentReadings = findViewById(R.id.current);
+        transportationFee = findViewById(R.id.transportationFee);
+        commentText = findViewById(R.id.comment);
+        sum = findViewById(R.id.sum);
+        isPaid = findViewById(R.id.isPaid);
         sum.setText(getString(R.string.sum_value, 0.f));
+        save = findViewById(R.id.saveRecord);
 
         readingsValidate();
 
-        chooseMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        AdapterView.OnItemSelectedListener validateAndCalc = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 readingsValidate();
@@ -106,20 +111,25 @@ public class NewRecordActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        });
+        };
 
-        chooseService.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        TextWatcher calc = new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                readingsValidate();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 sumCalculate();
             }
+        };
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
+        chooseMonth.setOnItemSelectedListener(validateAndCalc);
+        chooseService.setOnItemSelectedListener(validateAndCalc);
         chooseTariff.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -152,52 +162,11 @@ public class NewRecordActivity extends AppCompatActivity {
             }
         });
 
-        previousReadings.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        previousReadings.addTextChangedListener(calc);
+        currentReadings.addTextChangedListener(calc);
+        transportationFee.addTextChangedListener(calc);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                sumCalculate();
-            }
-        });
-
-        currentReadings.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                sumCalculate();
-            }
-        });
-
-        transportationFee.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                sumCalculate();
-            }
-        });
-
-        saveData.setOnClickListener(v -> {
+        save.setOnClickListener(v -> {
             String date = Arrays.asList(mainActivity.months)
                     .indexOf(chooseMonth.getSelectedItem().toString()) + "." + Calendar.getInstance().get(Calendar.YEAR);
             String service = chooseService.getSelectedItem().toString();
@@ -208,17 +177,17 @@ public class NewRecordActivity extends AppCompatActivity {
             String sum_transportationFee = transportationFee.getText().toString();
             String tariff = String.valueOf(tariff_id);
 
-            Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, sum_transportationFee, sum_result, tariff, comment);
+            Map<String, String> newEntries = recordActivity.getLocalData(date, service, current, paid, sum_transportationFee, sum_result, tariff, comment);
 
             if (!Objects.requireNonNull(newEntries.get("current")).isEmpty() && sumCalculate()) {
-                AddData(newEntries);
+                addData(newEntries);
             } else {
                 mainActivity.toast(this, "Введіть значення!", false);
             }
         });
     }
 
-    public void AddData(Map<String, String> newEntries) {
+    public void addData(Map<String, String> newEntries) {
         try {
             db.addRecord(newEntries);
         } catch (SQLiteConstraintException e) {
@@ -233,7 +202,7 @@ public class NewRecordActivity extends AppCompatActivity {
             return;
         }
 
-        mainActivity.toast(this, "Дані додані!", false);
+        mainActivity.toast(this, "Запис додано!", false);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("result", 1);
         setResult(RESULT_OK, intent);

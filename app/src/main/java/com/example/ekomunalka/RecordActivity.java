@@ -34,18 +34,19 @@ public class RecordActivity extends AppCompatActivity {
 
     DatabaseHelper db;
     MainActivity mainActivity;
+
     Spinner chooseMonth;
     Spinner chooseService;
-    EditText currentReadings;
-    EditText previousReadings;
     Spinner chooseTariff;
-    CheckBox isPaid;
-    EditText commentText;
+    EditText previousReadings;
+    EditText currentReadings;
     EditText transportationFee;
+    EditText commentText;
     TextView sum;
-    Button saveData;
-    String[] tariffs;
+    CheckBox isPaid;
+    Button save;
 
+    String[] tariffs;
     Cursor receivedItem;
     Cursor tariffs_db;
     int id;
@@ -74,47 +75,52 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         setTitle("Редагувати запис");
 
+        id = (int) getIntent().getLongExtra("id", -1);
         db = new DatabaseHelper(this);
         mainActivity = new MainActivity();
-        currentReadings = findViewById(R.id.current);
-        previousReadings = findViewById(R.id.previous);
-        chooseService = findViewById(R.id.chooseService);
-        ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mainActivity.services);
-        chooseService.setAdapter(servicesAdapter);
-        isPaid = findViewById(R.id.isPaid);
-        saveData = findViewById(R.id.saveRecord);
-        commentText = findViewById(R.id.comment);
-        sum = findViewById(R.id.sum);
-        transportationFee = findViewById(R.id.transportationFee);
-        chooseTariff = findViewById(R.id.chooseTariff);
-        tariffs_db = db.getTariffs();
-        tariffs = refreshListOfTariffs();
-        tariff_id = -1;
 
-        Intent receivedIntent = getIntent();
-        id = (int) receivedIntent.getLongExtra("id", -1);
         receivedItem = db.getRecord(id);
-        tariffs_db = db.getTariffs();
-
-        Map<String, String> data = GetDataFromDB();
-        int chosenServiceId = GetServiceId(Objects.requireNonNull(data.get("service")));
+        Map<String, String> data = getBdData();
 
         chooseMonth = findViewById(R.id.chooseMonth);
         ArrayAdapter<String> monthsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mainActivity.months);
         chooseMonth.setAdapter(monthsAdapter);
         chooseMonth.setSelection(Integer.parseInt(Objects.requireNonNull(data.get("date")).substring(0, Objects.requireNonNull(data.get("date")).length() - 5)));
-        chooseService.setSelection(chosenServiceId);
+
+        chooseService = findViewById(R.id.chooseService);
+        ArrayAdapter<String> servicesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mainActivity.services);
+        chooseService.setAdapter(servicesAdapter);
+        chooseService.setSelection(getServiceId(Objects.requireNonNull(data.get("service"))));
+
+        chooseTariff = findViewById(R.id.chooseTariff);
         chooseTariff.setSelection(Integer.parseInt(Objects.requireNonNull(data.get("tariff_id"))));
+        tariffs_db = db.getTariffs();
+        tariffs = refreshListOfTariffs();
+        tariff_id = -1;
+
+        previousReadings = findViewById(R.id.previous);
+
+        currentReadings = findViewById(R.id.current);
         currentReadings.setText(data.get("current"));
-        isPaid.setChecked(Objects.equals(data.get("paid"), "1"));
-        commentText.setText(data.get("comment"));
-        sum.setText("0 грн");
+
+        transportationFee = findViewById(R.id.transportationFee);
         transportationFee.setText(data.get("transportationFee"));
+
+        commentText = findViewById(R.id.comment);
+        commentText.setText(data.get("comment"));
+
+        sum = findViewById(R.id.sum);
+        sum.setText(getString(R.string.sum_value, 0.f));
+
+        isPaid = findViewById(R.id.isPaid);
+        isPaid.setChecked(Objects.equals(data.get("paid"), "1"));
+
+        save = findViewById(R.id.saveRecord);
 
         readingsValidate();
         sumCalculate();
 
-        chooseMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        AdapterView.OnItemSelectedListener validateAndCalc = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 readingsValidate();
@@ -122,19 +128,27 @@ public class RecordActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
 
-        chooseService.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        TextWatcher calc = new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                readingsValidate();
-                sumCalculate();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                sumCalculate();
+            }
+        };
+
+        chooseMonth.setOnItemSelectedListener(validateAndCalc);
+        chooseService.setOnItemSelectedListener(validateAndCalc);
 
         chooseTariff.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -167,52 +181,11 @@ public class RecordActivity extends AppCompatActivity {
             }
         });
 
-        previousReadings.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        previousReadings.addTextChangedListener(calc);
+        currentReadings.addTextChangedListener(calc);
+        transportationFee.addTextChangedListener(calc);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                sumCalculate();
-            }
-        });
-
-        currentReadings.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                sumCalculate();
-            }
-        });
-
-        transportationFee.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                sumCalculate();
-            }
-        });
-
-        saveData.setOnClickListener(v -> {
+        save.setOnClickListener(v -> {
             String date = Arrays.asList(mainActivity.months)
                     .indexOf(chooseMonth.getSelectedItem().toString()) + "." + Objects.requireNonNull(data.get("date")).substring(Objects.requireNonNull(data.get("date")).length() - 4);
             String service = chooseService.getSelectedItem().toString();
@@ -223,10 +196,10 @@ public class RecordActivity extends AppCompatActivity {
             String sum_transportationFee = transportationFee.getText().toString();
             String tariff = String.valueOf(tariff_id);
 
-            Map<String, String> newValues = GetDataFromLocal(date, service, current, paid, sum_transportationFee, sum_result, tariff, comment);
+            Map<String, String> newValues = getLocalData(date, service, current, paid, sum_transportationFee, sum_result, tariff, comment);
 
             if (!data.equals(newValues) && sumCalculate()) {
-                UpdateData(newValues, id);
+                updateData(newValues, id);
             } else {
                 if (Objects.requireNonNull(newValues.get("service")).isEmpty()) {
                     mainActivity.toast(this, "Введіть значення!", true);
@@ -271,7 +244,7 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    public void UpdateData(Map<String, String> newValues, int id) {
+    public void updateData(Map<String, String> newValues, int id) {
         try {
             db.updateRecord(newValues, id);
         } catch (ParseException e) {
@@ -280,14 +253,14 @@ public class RecordActivity extends AppCompatActivity {
             return;
         }
 
-        mainActivity.toast(this, "Дані оновлено!", false);
+        mainActivity.toast(this, "Запис оновлено!", false);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("result", 1);
         setResult(RESULT_OK, intent);
         RecordActivity.super.onBackPressed();
     }
 
-    public Map<String, String> GetDataFromDB() {
+    public Map<String, String> getBdData() {
         Map<String, String> data = new HashMap<>();
 
         while (receivedItem.moveToNext()) {
@@ -304,7 +277,7 @@ public class RecordActivity extends AppCompatActivity {
         return data;
     }
 
-    public Map<String, String> GetDataFromLocal(String date, String service, String current, String paid, String transportationFee, String sum, String tariff_id, String comment) {
+    public Map<String, String> getLocalData(String date, String service, String current, String paid, String transportationFee, String sum, String tariff_id, String comment) {
         Map<String, String> data = new HashMap<>();
 
         data.put("date", date);
@@ -319,7 +292,7 @@ public class RecordActivity extends AppCompatActivity {
         return data;
     }
 
-    public int GetServiceId(String service) {
+    public int getServiceId(String service) {
         int id = -1;
 
         switch (service) {
