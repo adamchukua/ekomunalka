@@ -39,6 +39,7 @@ public class NewRecordActivity extends AppCompatActivity {
     Spinner chooseMonth;
     CheckBox isPaid;
     EditText commentText;
+    EditText transportationFee;
     TextView sum;
     Button saveData;
     String[] tariffs;
@@ -86,6 +87,7 @@ public class NewRecordActivity extends AppCompatActivity {
         chooseMonth.setAdapter(monthsAdapter);
         chooseMonth.setSelection(Calendar.getInstance().get(Calendar.MONTH));
         sum = findViewById(R.id.sum);
+        transportationFee = findViewById(R.id.transportationFee);
         chooseTariff = findViewById(R.id.chooseTariff);
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
@@ -179,6 +181,21 @@ public class NewRecordActivity extends AppCompatActivity {
             }
         });
 
+        transportationFee.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                sumCalculate();
+            }
+        });
+
         saveData.setOnClickListener(v -> {
             String date = Arrays.asList(mainActivity.months)
                     .indexOf(chooseMonth.getSelectedItem().toString()) + "." + Calendar.getInstance().get(Calendar.YEAR);
@@ -187,9 +204,10 @@ public class NewRecordActivity extends AppCompatActivity {
             String paid = isPaid.isChecked() ? "1" : "0";
             String comment = commentText.getText().toString();
             String sum_result = sum.getText().toString().substring(0, sum.length() - 4);
+            String sum_transportationFee = transportationFee.getText().toString();
             String tariff = String.valueOf(tariff_id);
 
-            Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, sum_result, tariff, comment);
+            Map<String, String> newEntries = recordActivity.GetDataFromLocal(date, service, current, paid, sum_transportationFee, sum_result, tariff, comment);
 
             if (!Objects.requireNonNull(newEntries.get("current")).isEmpty() && sumCalculate()) {
                 AddData(newEntries);
@@ -209,6 +227,7 @@ public class NewRecordActivity extends AppCompatActivity {
             return;
         } catch (Exception e) {
             mainActivity.Toast(this, "Щось пішло не так...", true);
+            Log.d("addDataError", e.getMessage());
 
             return;
         }
@@ -265,9 +284,11 @@ public class NewRecordActivity extends AppCompatActivity {
         String service = chooseService.getSelectedItem().toString();
         String tariff = chooseTariff.getSelectedItem().toString();
         String date = chooseMonth.getSelectedItem().toString();
+        String transportation = transportationFee.getText().toString();
         int previous;
         int current;
         float price;
+        float sum_result;
 
         if (service.equals("Оберіть сервіс:") ||
                 tariff.equals("Оберіть тариф:") ||
@@ -284,7 +305,10 @@ public class NewRecordActivity extends AppCompatActivity {
             sum.setText(getString(R.string.sum_value, 0.f));
             return true;
         }
-        sum.setText(getString(R.string.sum_value, (current - previous) * price));
+
+        sum_result = (current - previous) * price;
+        sum_result += !transportation.isEmpty() ? Float.parseFloat(transportation) : 0;
+        sum.setText(getString(R.string.sum_value, sum_result));
         return true;
     }
 }

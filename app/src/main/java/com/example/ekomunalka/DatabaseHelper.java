@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "ekomunalka.db";
+    public static final String DATABASE_NAME = "ekomunalka_db.db";
 
     public static final String TABLE_RECORDS = "records";
     public static final String RECORDS_ID = "_id";
@@ -26,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String RECORDS_SERVICE = "service";
     public static final String RECORDS_CURRENT = "current";
     public static final String RECORDS_PAID = "paid";
+    public static final String RECORDS_TRANSPORTATION_FEE = "transportationFee";
     public static final String RECORDS_SUM = "sum";
     public static final String RECORDS_TARIFF_ID = "tariff_id";
     public static final String RECORDS_COMMENT = "comment";
@@ -57,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " service TEXT NOT NULL," +
                 " current INTEGER NOT NULL," +
                 " paid INTEGER NOT NULL," +
+                " transportationFee REAL," +
                 " sum REAL NOT NULL," +
                 " tariff_id INTEGER," +
                 " comment TEXT," +
@@ -84,6 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TARIFFS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTIFICATIONS);
         onCreate(db);
     }
 
@@ -99,6 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RECORDS_SERVICE, values.get("service"));
         contentValues.put(RECORDS_CURRENT, Integer.parseInt(Objects.requireNonNull(values.get("current"))));
         contentValues.put(RECORDS_PAID, Integer.parseInt(Objects.requireNonNull(values.get("paid"))));
+        if (!values.get("transportationFee").isEmpty())
+            contentValues.put(RECORDS_TRANSPORTATION_FEE, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("transportationFee")))).floatValue());
         contentValues.put(RECORDS_SUM, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("sum")))).floatValue());
         contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
@@ -120,6 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(RECORDS_SERVICE, values.get("service"));
         contentValues.put(RECORDS_CURRENT, Integer.valueOf(Objects.requireNonNull(values.get("current"))));
         contentValues.put(RECORDS_PAID, Integer.valueOf(Objects.requireNonNull(values.get("paid"))));
+        if (!values.get("transportationFee").isEmpty())
+            contentValues.put(RECORDS_TRANSPORTATION_FEE, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("transportationFee")))).floatValue());
         contentValues.put(RECORDS_SUM, Objects.requireNonNull(format.parse(Objects.requireNonNull(values.get("sum")))).floatValue());
         contentValues.put(RECORDS_TARIFF_ID, Integer.parseInt(Objects.requireNonNull(values.get("tariff_id"))));
         contentValues.put(RECORDS_COMMENT, values.get("comment"));
