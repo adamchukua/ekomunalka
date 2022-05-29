@@ -29,6 +29,7 @@ public class NotificationActivity extends AppCompatActivity {
     private EditText subtitle;
     private EditText day;
     private Button save;
+
     private AlarmManager alarmManager;
     private int id;
 

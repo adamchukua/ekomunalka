@@ -22,7 +22,6 @@ public class NewNotificationActivity extends AppCompatActivity {
 
     private DatabaseHelper db;
     private MainActivity mainActivity;
-    private NotificationActivity notificationActivity;
     private EditText title;
     private EditText subtitle;
     private EditText day;
@@ -35,7 +34,6 @@ public class NewNotificationActivity extends AppCompatActivity {
 
         db = new DatabaseHelper(this);
         mainActivity = new MainActivity();
-        notificationActivity = new NotificationActivity();
 
         title = findViewById(R.id.titleNotification);
         subtitle = findViewById(R.id.subtitleNotification);
