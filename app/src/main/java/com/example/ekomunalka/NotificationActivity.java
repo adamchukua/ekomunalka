@@ -58,7 +58,7 @@ public class NotificationActivity extends AppCompatActivity {
             data.put("subtitle", subtitleStr);
             data.put("day", dayStr);
 
-            if (!data.isEmpty()) {
+            if (!titleStr.isEmpty() || !subtitleStr.isEmpty() || !dayStr.isEmpty()) {
                 updateNotification(data);
             } else {
                 mainActivity.Toast(this, "Заповніть всі поля!", true);

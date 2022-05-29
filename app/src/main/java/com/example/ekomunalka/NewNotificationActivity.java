@@ -52,7 +52,7 @@ public class NewNotificationActivity extends AppCompatActivity {
             data.put("subtitle", subtitleStr);
             data.put("day", dayStr);
 
-            if (!data.isEmpty()) {
+            if (!titleStr.isEmpty() || !subtitleStr.isEmpty() || !dayStr.isEmpty()) {
                 addNotification(data);
             } else {
                 mainActivity.Toast(this, "Заповніть всі поля!", true);
@@ -87,7 +87,7 @@ public class NewNotificationActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, reminderReceiver, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                calendar.getTimeInMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent);
     }
 
     public void createNotificationChannel() {

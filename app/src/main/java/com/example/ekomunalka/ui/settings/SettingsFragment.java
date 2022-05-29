@@ -1,10 +1,14 @@
 package com.example.ekomunalka.ui.settings;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import com.example.ekomunalka.DatabaseHelper;
 import com.example.ekomunalka.MainActivity;
 import com.example.ekomunalka.R;
+import com.example.ekomunalka.ReminderReceiver;
 import com.example.ekomunalka.TariffsActivity;
 import com.example.ekomunalka.databinding.FragmentSettingsBinding;
 
@@ -35,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SettingsFragment extends Fragment {
 
@@ -85,7 +91,7 @@ public class SettingsFragment extends Fragment {
                 {"Скинути дані", "Всі записи, тарифи та нагадування будуть видалені"},
                 //{"Створити бекап", "Всі записи та тарифи будуть збережені у файлі, який ви зможете зберігати на будь-якому сховищі"},
                 //{"Відновити бекап", "Всі записи та тарифи будуть відновлені з файлу"},
-                {"Тестове повідомлення", "Отримати тестове повідомлення, аби дізнатись чи все працює"}};
+                {"Тестове повідомлення", "Отримати тестове повідомлення"}};
 
         db = new DatabaseHelper(getContext());
         mainActivity = new MainActivity();
@@ -190,6 +196,17 @@ public class SettingsFragment extends Fragment {
     }
 
     public void clearData() {
+        Cursor reminders = db.getNotifications();
+        int id;
+        while (reminders.moveToNext()) {
+            id = Integer.parseInt(reminders.getString(0));
+            Intent reminderReceiver = new Intent(getActivity(), ReminderReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), id, reminderReceiver, 0);
+            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+
+            alarmManager.cancel(pendingIntent);
+        }
+
         db.clearData();
         mainActivity.Toast(getActivity(), "Дані очищено!", true);
     }

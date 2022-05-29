@@ -27,7 +27,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         day = intent.getIntExtra("day", -1);
         calendar = Calendar.getInstance();
 
-        if (calendar.get(Calendar.DAY_OF_MONTH) == day) {
+        if (calendar.get(Calendar.DAY_OF_MONTH) == day || calendar.get(Calendar.HOUR_OF_DAY) == 9) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "Нагадування")
                     .setContentTitle(title)
                     .setContentText(subtitle)
