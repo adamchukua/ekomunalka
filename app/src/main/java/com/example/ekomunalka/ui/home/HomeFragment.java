@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
 
                     if (data != null) {
                         if (data.getIntExtra("result", -1) == 1) {
-                            RefreshListOfRecords();
+                            refreshListOfRecords();
                         }
                     }
                 }
@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
         empty = view.findViewById(R.id.empty);
         openNewRecordActivity = view.findViewById(R.id.openNewRecordActivity);
 
-        RefreshListOfRecords();
+        refreshListOfRecords();
 
         openNewRecordActivity.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NewRecordActivity.class);
@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public void RefreshListOfRecords() {
+    public void refreshListOfRecords() {
         Cursor data = db.getRecords();
         previousDate = "";
 
