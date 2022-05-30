@@ -93,10 +93,10 @@ public class RecordActivity extends AppCompatActivity {
         chooseService.setSelection(getServiceId(Objects.requireNonNull(data.get("service"))));
 
         chooseTariff = findViewById(R.id.chooseTariff);
-        chooseTariff.setSelection(Integer.parseInt(Objects.requireNonNull(data.get("tariff_id"))));
         tariffs_db = db.getTariffs();
         tariffs = refreshListOfTariffs();
         tariff_id = -1;
+        chooseTariff.setSelection(Integer.parseInt(Objects.requireNonNull(data.get("tariff_id"))));
 
         previousReadings = findViewById(R.id.previous);
 
