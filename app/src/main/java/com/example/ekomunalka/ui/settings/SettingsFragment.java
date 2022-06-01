@@ -42,8 +42,6 @@ public class SettingsFragment extends Fragment {
     private MainActivity mainActivity;
     private ListView info;
     private ListView settings;
-    private TextView infoTitle;
-    private TextView settingsTitle;
     private SimpleAdapter infoAdapter;
     private SimpleAdapter settingsAdapter;
 
@@ -71,8 +69,6 @@ public class SettingsFragment extends Fragment {
 
         info = view.findViewById(R.id.informationList);
         settings = view.findViewById(R.id.settingsList);
-        infoTitle = view.findViewById(R.id.infoListTitle);
-        settingsTitle = view.findViewById(R.id.settingsListTitle);
 
         List<Map<String, String>> infoList = new ArrayList<>();
         List<Map<String, String>> settingsList = new ArrayList<>();
